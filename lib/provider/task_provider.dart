@@ -86,4 +86,9 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void checkAllLongPressedTasks() {
+    _todos.where((todo)=>todo.isLongPress).forEach((todo)=> todo.setCompletedStatus = !todo.isCompleted);
+    notifyListeners();
+  }
+
 }

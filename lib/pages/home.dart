@@ -24,6 +24,15 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.yellow,
               elevation: 0,
               actions: [
+                if(taskProvider.isAnyTodoTaskLongPressed()) IconButton(
+                    onPressed: (){
+                      taskProvider.checkAllLongPressedTasks();
+                    },
+                    icon: const Icon(
+                      Icons.check_box,
+                      size: 30.0,
+                    )
+                ),
                 if(taskProvider.isAnyTodoTaskLongPressed())  IconButton(
                     onPressed: (){
                       taskProvider.removeAllTaskLongPressed();
@@ -32,7 +41,8 @@ class _HomeState extends State<Home> {
                         Icons.delete_rounded,
                         size: 30.0,
                     )
-                )
+                ),
+
               ],
             ),
             body: ListView.builder(
