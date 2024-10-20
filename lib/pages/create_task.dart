@@ -112,7 +112,7 @@ class _CreateTaskState extends State<CreateTask> {
 
                       const SizedBox(height: 50),
                       Text(
-                          "Due date",
+                          "Due date and time",
                           style: _textStyleForLabel()
                       ),
                       Row(
