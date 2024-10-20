@@ -25,6 +25,7 @@ class _TodoTileState extends State<TodoTile> {
 
     return GestureDetector(
       onTap: (){
+        print("todo tile gesture detector");
         Navigator.of(context).pushNamed(
           TodoAppRoutes.newTask,
           arguments: todo

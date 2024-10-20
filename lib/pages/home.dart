@@ -45,14 +45,19 @@ class _HomeState extends State<Home> {
 
               ],
             ),
-            body: ListView.builder(
-                itemCount: taskProvider.getLengthOfTodos(),
-                itemBuilder: (context,index){
-                  return TodoTile(
-                    todo: taskProvider.todos[index],
-                    taskProvider: taskProvider,
-                  );
-                },
+            body: GestureDetector(
+              onTap: (){
+                taskProvider.toggleLongPressStatusForAllSelectedTasks();
+              },
+              child: ListView.builder(
+                  itemCount: taskProvider.getLengthOfTodos(),
+                  itemBuilder: (context,index){
+                    return TodoTile(
+                      todo: taskProvider.todos[index],
+                      taskProvider: taskProvider,
+                    );
+                  },
+              ),
             ),
           floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.yellow,

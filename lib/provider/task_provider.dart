@@ -34,6 +34,11 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void toggleLongPressStatusForAllSelectedTasks(){
+    _todos.where((todo)=>todo.isLongPress).forEach((todo)=>todo.setLongPressStatus = !todo.isLongPress);
+    notifyListeners();
+  }
+
   void createOrUpdateTodo(String taskName,String dueDate,String taskId){
     if(isTaskExisting(taskId)){
       updateTodo(taskName,dueDate,taskId);
