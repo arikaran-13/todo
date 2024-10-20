@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
               actions: [
                 if(taskProvider.isAnyTodoTaskLongPressed()) IconButton(
                     onPressed: (){
-                      taskProvider.checkAllLongPressedTasks();
+                      showAlertDialogBoxForCheckAllTaskButton(taskProvider);
                     },
                     icon: const Icon(
                       Icons.check_box,
@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
                 ),
                 if(taskProvider.isAnyTodoTaskLongPressed())  IconButton(
                     onPressed: (){
-                      taskProvider.removeAllTaskLongPressed();
+                      showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
                     },
                     icon: const Icon(
                         Icons.delete_rounded,
@@ -65,6 +65,71 @@ class _HomeState extends State<Home> {
           ),
         );
       }
+    );
+  }
+
+  void showAlertDialogBoxForCheckAllTaskButton(TaskProvider taskProvider) {
+     showDialog(
+         context: context,
+         builder: (BuildContext context){
+           return AlertDialog(
+            title: const Text("Are you sure?"),
+            content: const Text(
+                "Set selected task as finished?",
+              style: TextStyle(
+                fontSize: 17.0
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("No")
+              ),
+              TextButton(onPressed: (){
+                taskProvider.checkAllLongPressedTasks();
+                Navigator.of(context).pop();
+              },
+                  child: const Text(
+                      "Yes"
+                  )
+              ),
+            ],
+         );
+         }
+         );
+  }
+
+  void showAlertDialogBoxForToDeleteTodoTasks(TaskProvider taskProvider) {
+    showDialog(context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: const Text("Are you sure?"),
+            content: const Text(
+                "Delete tasks?",
+              style: TextStyle(
+                fontSize: 17.0
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("No")
+              ),
+              TextButton(onPressed: (){
+                taskProvider.removeAllTaskLongPressed();
+                Navigator.of(context).pop();
+              },
+                  child: const Text(
+                      "Yes"
+                  )
+              ),
+            ],
+          );
+        }
     );
   }
 }

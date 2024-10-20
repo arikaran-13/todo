@@ -16,9 +16,9 @@ class TodoTile extends StatefulWidget {
 }
 
 class _TodoTileState extends State<TodoTile> {
+
   @override
   Widget build(BuildContext context) {
-
     final  todo = widget.todo;
     final  taskProvider = widget.taskProvider;
     final longPressStatus = todo.isLongPress;
@@ -32,8 +32,6 @@ class _TodoTileState extends State<TodoTile> {
       },
       onLongPress: (){
         taskProvider.toggleLongPressStatus(todo.taskId);
-        print("long press");
-
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),

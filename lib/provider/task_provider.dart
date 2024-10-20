@@ -10,7 +10,7 @@ class TaskProvider extends ChangeNotifier{
   final List<Todo> _todos = [new Todo(taskId: "id1",taskName: "Eat Dinner")];
 
   var log = Logger();
-  var uuid = Uuid();
+  var uuid = const Uuid();
 
   List<Todo> get todos => _todos;
 
