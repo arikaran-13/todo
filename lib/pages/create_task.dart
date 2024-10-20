@@ -14,6 +14,7 @@ class _CreateTaskState extends State<CreateTask> {
   final _key = GlobalKey<FormState>();
   final _taskNameController = TextEditingController();
   final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
   bool isInitialised = false;
   String? taskId;
 
@@ -34,9 +35,30 @@ class _CreateTaskState extends State<CreateTask> {
         taskId = todo.taskId;
         _taskNameController.text = todo.taskName;
         _dateController.text = todo.dueDate;
+        _timeController.text = todo.dueTime;
         isInitialised=true;
       }
     }
+  }
+
+  void _showDateTimePicker() async{
+   var pickedDate = await showDatePicker(
+        context: context,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(6000)
+    );
+   if(pickedDate==null)return;
+   _dateController.text = '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
+  }
+
+  void _showTimePicker() async{
+    var pickedTime =  await showTimePicker(
+      initialTime: TimeOfDay.now(),
+      context: context,
+    );
+    if(pickedTime == null)return;
+    var formattedMin = pickedTime.minute <= 9 ? '0${pickedTime.minute}': '${pickedTime.minute}';
+    _timeController.text = '${pickedTime.hour}:$formattedMin';
   }
 
   @override
@@ -102,9 +124,9 @@ class _CreateTaskState extends State<CreateTask> {
                                   fontSize: 20.0
                               ),
                               decoration: const InputDecoration(
-                                  hintText: "Enter Due date"
+                                  hintText: "Select due date"
                               ),
-                              onTap: _showDatePicker,
+                              onTap: _showDateTimePicker,
                             ),
                           ),
                           Padding(
@@ -114,11 +136,40 @@ class _CreateTaskState extends State<CreateTask> {
                                       Icons.calendar_month,
                                       size: 30,
                                   ),
-                                  onPressed: ()=>_showDatePicker(),
+                                  onPressed: ()=>_showDateTimePicker(),
                               )
                           ),
                         ],
-                      )
+                      ),
+                      const SizedBox(height: 30.0,),
+                      Row(
+                        children: [
+                          if(_dateController.text.isNotEmpty)Expanded(
+                            child: TextFormField(
+                              onTap: _showTimePicker,
+                              controller: _timeController,
+                              style: const TextStyle(
+                                  fontSize: 20.0
+                              ),
+                              decoration: const InputDecoration(
+                                  hintText: "Select time"
+                              ),
+                            ),
+                          ),
+                          if(_dateController.text.isNotEmpty)Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 5.0, 0),
+                            child: IconButton(
+                                onPressed: (){
+                                   _showTimePicker();
+                                },
+                                icon: const Icon(
+                                 Icons.access_time_filled_rounded,
+                                 size: 30.0,
+                                )
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   )
               ),
@@ -144,23 +195,13 @@ class _CreateTaskState extends State<CreateTask> {
     );
   }
 
-  void _showDatePicker(){
-    showDatePicker(
-        context: context,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(6000)
-    ).then((value)=>{
-      if(value != null){
-        _dateController.text = '${value.day}/${value.month}/${value.year}',
-      }
-    });
-  }
 
   void _createNewTask(TaskProvider taskProvider,String taskId){
      var taskName = _taskNameController.text;
      var date = _dateController.text;
+     var time = _timeController.text;
      if(taskName.isNotEmpty){
-       taskProvider.createOrUpdateTodo(taskName, date,taskId);
+       taskProvider.createOrUpdateTodo(taskName, date,time,taskId);
      }
 
   }

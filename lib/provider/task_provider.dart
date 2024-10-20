@@ -15,7 +15,6 @@ class TaskProvider extends ChangeNotifier{
   List<Todo> get todos => _todos;
 
   int getLengthOfTodos(){
-    print("length : ${_todos.length}");
     return _todos.length;
   }
 
@@ -39,14 +38,15 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void createOrUpdateTodo(String taskName,String dueDate,String taskId){
+  void createOrUpdateTodo(String taskName,String dueDate,String dueTime,String taskId){
     if(isTaskExisting(taskId)){
-      updateTodo(taskName,dueDate,taskId);
+      updateTodo(taskName,dueDate,dueTime,taskId);
       return;
     }
     taskName = taskName.trim();
     var todo = Todo(taskName: taskName,taskId: uuid.v4());
     if(dueDate.isNotEmpty)todo.setDueDate = dueDate;
+    if(dueTime.isNotEmpty)todo.setDueTime = dueTime;
     _todos.add(todo);
     log.i("Todo task ${todo.taskId} is created");
     notifyListeners();
@@ -84,10 +84,11 @@ class TaskProvider extends ChangeNotifier{
     return _todos.any((todo)=>todo.taskId==taskId);
   }
 
-  void updateTodo(String taskName, String dueDate, String taskId) {
+  void updateTodo(String taskName, String dueDate, String dueTime,String taskId) {
     var todo = getTaskById(taskId);
     todo.setTaskName = taskName;
     todo.setDueDate = dueDate;
+    todo.setDueTime = dueTime;
     notifyListeners();
   }
 
