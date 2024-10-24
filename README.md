@@ -6,8 +6,8 @@ A Simple Todo app with Local database
 
 ## Sample images:
 
-![Home](.idea/img.png)
+![Home](lib/utils/img.png)
 
-![Create Task 1](.idea/create-new-task1.png)
+![Create Task 1](lib/utils/create-new-task1.png)
 
-![Create Task 2](.idea/create-new-task2.png)
+![Create Task 2](lib/utils/create-new-task2.png)
