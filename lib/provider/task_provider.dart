@@ -38,16 +38,26 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void createOrUpdateTodo(String taskName,String dueDate,String dueTime,String taskId){
+  void createOrUpdateTodo(
+      String taskName,
+      String dueDate,
+      String dueTime,
+      String taskId,
+      String remainderDate,
+      String remainderTime
+      ){
     if(isTaskExisting(taskId)){
-      updateTodo(taskName,dueDate,dueTime,taskId);
+      updateTodo(taskName,dueDate,dueTime,taskId,remainderDate,remainderTime);
       return;
     }
     taskName = taskName.trim();
     var todo = Todo(taskName: taskName,taskId: uuid.v4());
     if(dueDate.isNotEmpty)todo.setDueDate = dueDate;
     if(dueTime.isNotEmpty)todo.setDueTime = dueTime;
+    if(remainderDate.isNotEmpty)todo.setRemainderDate = remainderDate;
+    if(remainderTime.isNotEmpty)todo.setRemainderTime = remainderTime;
     _todos.add(todo);
+    print('updated ${todo.remainderDate}');
     log.i("Todo task ${todo.taskId} is created");
     notifyListeners();
   }
@@ -56,6 +66,19 @@ class TaskProvider extends ChangeNotifier{
      var todo = getTaskById(taskId);
      todo.setCompletedStatus = !todo.isCompleted;
      notifyListeners();
+  }
+
+
+  void clearRemainderInfo({String? taskId}) {
+    if(taskId!.isNotEmpty) {
+      print('inside clear');
+      var todo = getTaskById(taskId!);
+      todo.setRemainderDate = '';
+      todo.setRemainderTime = '';
+
+    }
+    print('notofy');
+    notifyListeners();
   }
 
   Todo getTaskById(String taskId){
@@ -84,11 +107,14 @@ class TaskProvider extends ChangeNotifier{
     return _todos.any((todo)=>todo.taskId==taskId);
   }
 
-  void updateTodo(String taskName, String dueDate, String dueTime,String taskId) {
+  void updateTodo(String taskName, String dueDate, String dueTime,String taskId,String remainderDate , String remainderTime) {
     var todo = getTaskById(taskId);
     todo.setTaskName = taskName;
     todo.setDueDate = dueDate;
     todo.setDueTime = dueTime;
+    todo.setRemainderTime = remainderTime;
+    todo.setRemainderDate = remainderDate;
+    print('updated ${todo.remainderDate}');
     notifyListeners();
   }
 
@@ -96,5 +122,7 @@ class TaskProvider extends ChangeNotifier{
     _todos.where((todo)=>todo.isLongPress).forEach((todo)=> todo.setCompletedStatus = !todo.isCompleted);
     notifyListeners();
   }
+
+
 
 }

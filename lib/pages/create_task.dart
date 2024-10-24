@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/models/todo.dart';
+import 'package:todo/notification/notification.dart';
 import 'package:todo/provider/task_provider.dart';
 
 class CreateTask extends StatefulWidget {
@@ -17,6 +18,11 @@ class _CreateTaskState extends State<CreateTask> {
   final _timeController = TextEditingController();
   bool isInitialised = false;
   String? taskId;
+  String formattedRemainderDate = '';
+  String formattedRemainderTime = '';
+  DateTime? pickedDate;
+  TimeOfDay? pickedTime;
+  bool isCompleted = false;
 
   @override
   void dispose() {
@@ -36,6 +42,8 @@ class _CreateTaskState extends State<CreateTask> {
         _taskNameController.text = todo.taskName;
         _dateController.text = todo.dueDate;
         _timeController.text = todo.dueTime;
+        formattedRemainderTime = todo.remainderTime;
+        formattedRemainderDate = todo.remainderDate;
         isInitialised=true;
       }
     }
@@ -61,6 +69,7 @@ class _CreateTaskState extends State<CreateTask> {
     _timeController.text = '${pickedTime.hour}:$formattedMin';
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -73,6 +82,9 @@ class _CreateTaskState extends State<CreateTask> {
               title: const Text("New Task"),
               elevation: 0.0,
               actions: [
+                if(isInitialised)Checkbox(value: false, onChanged: (b){
+                    isCompleted = !isCompleted;
+                }),
                 if(isInitialised)Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
                     child: IconButton(
@@ -170,6 +182,81 @@ class _CreateTaskState extends State<CreateTask> {
                           )
                         ],
                       ),
+                      const SizedBox(height: 20,),
+                      Row(
+                        children :[ ElevatedButton.icon(
+                            onPressed: () async{
+                              await showDatePickerForRemainder();
+                                int year, month, day, hour, min;
+
+                                if (pickedDate != null) {
+                                  year = pickedDate!.year;
+                                  month = pickedDate!.month;
+                                  day = pickedDate!.day;
+                                } else {
+                                  year = DateTime.now().year;
+                                  month = DateTime.now().month;
+                                  day = DateTime.now().day;
+                                }
+
+                                if (pickedTime != null) {
+                                  hour = pickedTime!.hour;
+                                  min = pickedTime!.minute;
+                                } else {
+                                  hour = 9; // Default hour
+                                  min = 30; // Default minute
+                                }
+                                NotificationService().scheduleNotification(
+                                  title: "Remember??",
+                                  body: "Complete before it's too late",
+                                  scheduledDateTime: DateTime(
+                                    year,
+                                    month,
+                                    day,
+                                    hour,
+                                    min,
+                                  ),
+                                );
+                            },
+                            label: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                  isRemainderDateAndNotEmpty() ?
+                                  "Remaind me $formattedRemainderTime\n$formattedRemainderDate":
+                                    "Remaind me"
+                              ),
+                            ),
+                          icon:  const Icon(
+                              Icons.notifications_active_outlined,
+                            size: 20.0,
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.black, backgroundColor: Colors.yellow,
+                          ),
+                        ),
+                          if (isRemainderDateAndNotEmpty())
+                            IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.black,
+                              ),
+                              onPressed: (){
+                                print('on pressed clse');
+                                if(taskId != null && taskId!.isNotEmpty) {
+                                  taskProvider.clearRemainderInfo(
+                                      taskId: taskId);
+
+                                  print('on pressed in');
+                                }
+                                else{
+
+                                }
+                              },
+                            ),
+                        ]
+                      ),
+
+
                     ],
                   )
               ),
@@ -195,14 +282,102 @@ class _CreateTaskState extends State<CreateTask> {
     );
   }
 
+  bool isRemainderDateAndNotEmpty(){
+    return (formattedRemainderDate.isNotEmpty || formattedRemainderTime.isNotEmpty);
+  }
+
+  bool isPickedDateAndTimeNotEmpty(){
+    bool res = pickedDate != null || pickedTime!=null;
+    print('res: $res');
+    return res ;
+  }
+
 
   void _createNewTask(TaskProvider taskProvider,String taskId){
      var taskName = _taskNameController.text;
      var date = _dateController.text;
      var time = _timeController.text;
      if(taskName.isNotEmpty){
-       taskProvider.createOrUpdateTodo(taskName, date,time,taskId);
+       taskProvider.createOrUpdateTodo(
+           taskName,
+           date,
+           time,
+           taskId,
+           formattedRemainderDate,
+           formattedRemainderTime
+       );
      }
 
   }
+
+  Future<void> showDatePickerForRemainder() async{
+    pickedDate = await showDatePicker(
+        context: context,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(6000));
+
+    pickedTime = await showTimePicker(
+       context: context,
+       initialTime: const TimeOfDay(hour: 12,minute: 0)
+   );
+
+   formattedRemainderTime = "${pickedTime?.hour}:${pickedTime!.minute < 10 ? '0${pickedTime?.minute}' : '${pickedTime?.minute}'}";
+   formattedRemainderDate = '${getWeekOfTheDay(pickedDate!.weekday)}, ${pickedDate?.day} ${getMonthName(pickedDate!.month)}';
+  }
+
+  String getWeekOfTheDay(int weekDay){
+    switch (weekDay){
+      case 1:
+        return "Mon";
+      case 2:
+        return "Tue";
+      case 3:
+        return "Wed";
+      case 4:
+        return "Thu";
+      case 5:
+        return "Fri";
+      case 6:
+        return "Sat";
+      case 7:
+        return "Sun";
+      default:{
+        return "";
+      }
+    }
+  }
+
+  String getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return "Jan";
+      case 2:
+        return "Feb";
+      case 3:
+        return "March";
+      case 4:
+        return "April";
+      case 5:
+        return "May";
+      case 6:
+        return "June";
+      case 7:
+        return "July";
+      case 8:
+        return "Aug";
+      case 9:
+        return "Sept";
+      case 10:
+        return "Oct";
+      case 11:
+        return "Nov";
+      case 12:
+        return "Dec";
+      default:
+        return "";
+    }
+  }
+
+
+
 }
