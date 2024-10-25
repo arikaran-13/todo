@@ -83,8 +83,9 @@ class _CreateTaskState extends State<CreateTask> {
               title: const Text("New Task"),
               elevation: 0.0,
               actions: [
-                if(isInitialised)Checkbox(value: false, onChanged: (b){
+                if(isInitialised)Checkbox(value: taskProvider.getTaskById(taskId!).isCompleted, onChanged: (b){
                     isCompleted = !isCompleted;
+                    taskProvider.setTaskCompletionStatus(taskId!);
                 }),
                 if(isInitialised)Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
