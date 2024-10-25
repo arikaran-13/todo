@@ -44,6 +44,7 @@ class _CreateTaskState extends State<CreateTask> {
         _timeController.text = todo.dueTime;
         formattedRemainderTime = todo.remainderTime;
         formattedRemainderDate = todo.remainderDate;
+        print('todo remainder time and date ${todo.remainderDate}${todo.remainderTime}');
         isInitialised=true;
       }
     }
@@ -241,22 +242,15 @@ class _CreateTaskState extends State<CreateTask> {
                                 color: Colors.black,
                               ),
                               onPressed: (){
-                                print('on pressed clse');
-                                if(taskId != null && taskId!.isNotEmpty) {
-                                  taskProvider.clearRemainderInfo(
-                                      taskId: taskId);
-
-                                  print('on pressed in');
+                                  setState(() {
+                                    formattedRemainderDate = '';
+                                    formattedRemainderTime = '';
+                                  });
                                 }
-                                else{
-
-                                }
-                              },
+                              ,
                             ),
                         ]
                       ),
-
-
                     ],
                   )
               ),
@@ -377,7 +371,4 @@ class _CreateTaskState extends State<CreateTask> {
         return "";
     }
   }
-
-
-
 }
