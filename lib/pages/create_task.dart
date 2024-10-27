@@ -73,7 +73,6 @@ class _CreateTaskState extends State<CreateTask> {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<TaskProvider>(
         builder: (context,taskProvider,child){
           return Scaffold(
@@ -286,7 +285,6 @@ class _CreateTaskState extends State<CreateTask> {
     print('res: $res');
     return res ;
   }
-
 
   void _createNewTask(TaskProvider taskProvider,String taskId){
      var taskName = _taskNameController.text;
