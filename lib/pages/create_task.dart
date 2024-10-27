@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/models/schedule-notification.dart';
 import 'package:todo/models/todo.dart';
-import 'package:todo/notification/notification.dart';
 import 'package:todo/provider/task_provider.dart';
 
 class CreateTask extends StatefulWidget {
@@ -23,6 +23,7 @@ class _CreateTaskState extends State<CreateTask> {
   DateTime? pickedDate;
   TimeOfDay? pickedTime;
   bool isCompleted = false;
+  ScheduleNotification scheduleNotification = ScheduleNotification();
 
   @override
   void dispose() {
@@ -189,7 +190,6 @@ class _CreateTaskState extends State<CreateTask> {
                             onPressed: () async{
                               await showDatePickerForRemainder();
                                 int year, month, day, hour, min;
-
                                 if (pickedDate != null) {
                                   year = pickedDate!.year;
                                   month = pickedDate!.month;
@@ -207,17 +207,11 @@ class _CreateTaskState extends State<CreateTask> {
                                   hour = 9; // Default hour
                                   min = 30; // Default minute
                                 }
-                                NotificationService().scheduleNotification(
-                                  title: "Remember??",
-                                  body: "Complete before it's too late",
-                                  scheduledDateTime: DateTime(
-                                    year,
-                                    month,
-                                    day,
-                                    hour,
-                                    min,
-                                  ),
-                                );
+                                scheduleNotification.setSelectedMin = min;
+                                scheduleNotification.setSelectedHour = hour;
+                                scheduleNotification.setSelectedDay = day;
+                                scheduleNotification.setSelectedYear = year;
+                                scheduleNotification.setSelectedMonth = month;
                             },
                             label: Padding(
                               padding: const EdgeInsets.all(5.0),
@@ -246,8 +240,7 @@ class _CreateTaskState extends State<CreateTask> {
                                     formattedRemainderDate = '';
                                     formattedRemainderTime = '';
                                   });
-                                }
-                              ,
+                                },
                             ),
                         ]
                       ),
@@ -258,9 +251,8 @@ class _CreateTaskState extends State<CreateTask> {
             floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.yellow,
                 onPressed: () {
-                  _createNewTask(taskProvider,taskId??'');
+                  _createNewTask(taskProvider,taskId??'',scheduleNotification);
                   Navigator.pop(context);
-
                   },
                 child: const Icon(Icons.check),
             ),
@@ -286,7 +278,7 @@ class _CreateTaskState extends State<CreateTask> {
     return res ;
   }
 
-  void _createNewTask(TaskProvider taskProvider,String taskId){
+  void _createNewTask(TaskProvider taskProvider,String taskId,ScheduleNotification scheduleNotification){
      var taskName = _taskNameController.text;
      var date = _dateController.text;
      var time = _timeController.text;
@@ -297,7 +289,8 @@ class _CreateTaskState extends State<CreateTask> {
            time,
            taskId,
            formattedRemainderDate,
-           formattedRemainderTime
+           formattedRemainderTime,
+           scheduleNotification
        );
      }
 

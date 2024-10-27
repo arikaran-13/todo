@@ -42,6 +42,7 @@ class NotificationService {
         required DateTime scheduledDateTime
       }) async {
     print('inside schedule notification');
+    print('date: ${scheduledDateTime.day}/${scheduledDateTime.month}/${scheduledDateTime.year}\ntime: ${scheduledDateTime.hour}:${scheduledDateTime.minute}');
     return notificationsPlugin.zonedSchedule(
         id,
         title,

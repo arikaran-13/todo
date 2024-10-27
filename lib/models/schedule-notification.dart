@@ -23,11 +23,12 @@ class ScheduleNotification{
   int get selectedHour => hour;
   int get selectedMin => min;
 
-  set setSelectedYear(int selectedYear) => year;
-  set setSelectedMonth(int selectedMonth) => month;
-  set setSelectedDay(int selectedDay)=> day;
-  set setSelectedHour(int selectedHour)=> hour;
-  set setSelectedMin(int selectedMin)=> min;
+  set setSelectedYear(int selectedYear) => year = selectedYear;
+  set setSelectedMonth(int selectedMonth) => month = selectedMonth;
+  set setSelectedDay(int selectedDay) => day = selectedDay;
+  set setSelectedHour(int selectedHour) => hour = selectedHour;
+  set setSelectedMin(int selectedMin) => min = selectedMin;
+
 
 
 

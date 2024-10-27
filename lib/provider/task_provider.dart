@@ -1,9 +1,12 @@
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:todo/models/schedule-notification.dart';
 import '../models/todo.dart';
 import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
+
+import '../notification/notification.dart';
 
 class TaskProvider extends ChangeNotifier{
 
@@ -44,13 +47,15 @@ class TaskProvider extends ChangeNotifier{
       String dueTime,
       String taskId,
       String remainderDate,
-      String remainderTime
+      String remainderTime,
+      ScheduleNotification scheduleNotification
       ){
     if(isTaskExisting(taskId)){
       updateTodo(taskName,dueDate,dueTime,taskId,remainderDate,remainderTime);
       return;
     }
     Todo newTodo = createNewTodo(taskName,dueDate,dueTime,remainderDate,remainderTime);
+    createNotification(newTodo,scheduleNotification);
     _todos.add(newTodo);
     notifyListeners();
   }
@@ -120,6 +125,20 @@ class TaskProvider extends ChangeNotifier{
     if(remainderDate.isNotEmpty)todo.setRemainderDate = remainderDate;
     if(remainderTime.isNotEmpty)todo.setRemainderTime = remainderTime;
     return todo;
+  }
+
+  void createNotification(Todo todo, ScheduleNotification scheduleNotification) {
+    NotificationService().scheduleNotification(
+      title: "⏰ Reminder: ${todo.taskName}",
+      body: "Don't forget! Finish '${todo.taskName}' by ${todo.dueDate} at ${todo.dueTime}. You've got this! 💪",
+      scheduledDateTime: DateTime(
+        scheduleNotification.year,
+        scheduleNotification.month,
+        scheduleNotification.day,
+        scheduleNotification.hour,
+        scheduleNotification.min,
+      ),
+    );
   }
 
 }
