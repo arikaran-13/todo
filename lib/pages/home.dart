@@ -17,10 +17,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Consumer<TaskProvider>(
       builder: (context,taskProvider,child) {
+        var inCompletedTodos = taskProvider.getInCompletedTodos();
         return  Scaffold(
             backgroundColor: Colors.yellow[200],
             appBar: AppBar(
-              title: const Text("Todo"),
+              title: const Text("Todo(s)"),
               backgroundColor: Colors.yellow,
               elevation: 0,
               centerTitle: true,
@@ -32,7 +33,7 @@ class _HomeState extends State<Home> {
                   showAlertDialogBoxForCheckAllTaskButton(taskProvider);
                 },
                  ),
-                if(taskProvider.isAnyTodoTaskLongPressed())  IconButton(
+                if(taskProvider.isAnyTodoTaskLongPressed())IconButton(
                     onPressed: (){
                       showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
                     },
@@ -41,18 +42,24 @@ class _HomeState extends State<Home> {
                         size: 28.0,
                     )
                 ),
-
+                IconButton(
+                    onPressed: (){
+                      Navigator.of(context).pushNamed(TodoAppRoutes.completedTask);
+                    },
+                    icon: const Icon(Icons.check_circle_outline)
+                )
               ],
             ),
             body: GestureDetector(
-              onTap: (){
+              onTap: (){ // this on tap ensures that if i click any area in body then it will unselect all selected item
                 taskProvider.toggleLongPressStatusForAllSelectedTasks();
+                print('on tap from home screen');
               },
               child: ListView.builder(
-                  itemCount: taskProvider.getLengthOfTodos(),
+                  itemCount: inCompletedTodos.length,
                   itemBuilder: (context,index){
                     return TodoTile(
-                      todo: taskProvider.todos[index],
+                      todo: inCompletedTodos[index],
                       taskProvider: taskProvider,
                     );
                   },

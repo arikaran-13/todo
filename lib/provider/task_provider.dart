@@ -11,14 +11,20 @@ import '../notification/notification.dart';
 class TaskProvider extends ChangeNotifier{
 
   final List<Todo> _todos = [Todo(taskId: "id1",taskName: "Eat Dinner")];
-
   var log = Logger();
   var uuid = const Uuid();
-
   List<Todo> get todos => _todos;
 
   int getLengthOfTodos(){
     return _todos.length;
+  }
+
+  List<Todo> getInCompletedTodos(){
+    return _todos.where((todo)=>!todo.isCompleted).toList();
+  }
+
+  List<Todo> getCompletedTodos(){
+    return _todos.where((todo)=>todo.isCompleted).toList();
   }
 
   void toggleLongPressStatus(String taskId){
