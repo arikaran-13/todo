@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class TaskProvider extends ChangeNotifier{
 
-  final List<Todo> _todos = [new Todo(taskId: "id1",taskName: "Eat Dinner")];
+  final List<Todo> _todos = [Todo(taskId: "id1",taskName: "Eat Dinner")];
 
   var log = Logger();
   var uuid = const Uuid();
@@ -50,15 +50,8 @@ class TaskProvider extends ChangeNotifier{
       updateTodo(taskName,dueDate,dueTime,taskId,remainderDate,remainderTime);
       return;
     }
-    taskName = taskName.trim();
-    var todo = Todo(taskName: taskName,taskId: uuid.v4());
-    if(dueDate.isNotEmpty)todo.setDueDate = dueDate;
-    if(dueTime.isNotEmpty)todo.setDueTime = dueTime;
-    if(remainderDate.isNotEmpty)todo.setRemainderDate = remainderDate;
-    if(remainderTime.isNotEmpty)todo.setRemainderTime = remainderTime;
-    _todos.add(todo);
-    print('updated ${todo.remainderDate}');
-    log.i("Todo task ${todo.taskId} is created");
+    Todo newTodo = createNewTodo(taskName,dueDate,dueTime,remainderDate,remainderTime);
+    _todos.add(newTodo);
     notifyListeners();
   }
 
@@ -68,18 +61,13 @@ class TaskProvider extends ChangeNotifier{
      notifyListeners();
   }
 
-
-
-
   void clearRemainderInfo({String? taskId}) {
     if(taskId!.isNotEmpty) {
-      print('inside clear');
-      var todo = getTaskById(taskId!);
+      var todo = getTaskById(taskId);
       todo.setRemainderDate = '';
       todo.setRemainderTime = '';
 
     }
-    print('notofy');
     notifyListeners();
   }
 
@@ -116,7 +104,6 @@ class TaskProvider extends ChangeNotifier{
     todo.setDueTime = dueTime;
     todo.setRemainderTime = remainderTime;
     todo.setRemainderDate = remainderDate;
-    print('updated ${todo.remainderDate}');
     notifyListeners();
   }
 
@@ -125,6 +112,14 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-
+  Todo createNewTodo(String taskName, String dueDate, String dueTime, String remainderDate, String remainderTime) {
+    taskName = taskName.trim();
+    var todo = Todo(taskName: taskName,taskId: uuid.v4());
+    if(dueDate.isNotEmpty)todo.setDueDate = dueDate;
+    if(dueTime.isNotEmpty)todo.setDueTime = dueTime;
+    if(remainderDate.isNotEmpty)todo.setRemainderDate = remainderDate;
+    if(remainderTime.isNotEmpty)todo.setRemainderTime = remainderTime;
+    return todo;
+  }
 
 }
