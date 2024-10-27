@@ -102,6 +102,9 @@ class TaskProvider extends ChangeNotifier{
     return _todos.any((todo)=>todo.taskId==taskId);
   }
 
+  bool isAnyTodoTaskCompleted(){
+    return _todos.any((todo)=>todo.isCompleted);
+  }
   void updateTodo(String taskName, String dueDate, String dueTime,String taskId,String remainderDate , String remainderTime,ScheduleNotification scheduleNotification) {
     var todo = getTaskById(taskId);
     todo.setTaskName = taskName;
@@ -136,6 +139,7 @@ class TaskProvider extends ChangeNotifier{
     }
     if(dateTime.isAfter(DateTime.now())) {
      NotificationService().scheduleNotification(
+         id: 0, // todo: for each task we need to generate the unique notification id
          title: "⏰ Reminder: ${todo.taskName}",
          body: "Don't forget! Finish '${todo.taskName}' by ${todo
              .dueDate} at ${todo.dueTime}. You've got this! 💪",

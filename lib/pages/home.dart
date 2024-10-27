@@ -25,22 +25,20 @@ class _HomeState extends State<Home> {
               elevation: 0,
               centerTitle: true,
               actions: [
-                if(taskProvider.isAnyTodoTaskLongPressed()) IconButton(
-                    onPressed: (){
-                      showAlertDialogBoxForCheckAllTaskButton(taskProvider);
-                    },
-                    icon: const Icon(
-                      Icons.check_box,
-                      size: 30.0,
-                    )
-                ),
+               if(taskProvider.isAnyTodoTaskLongPressed())
+                 Checkbox(
+                     value: taskProvider.isAnyTodoTaskCompleted(),
+                     onChanged: (val){
+                  showAlertDialogBoxForCheckAllTaskButton(taskProvider);
+                },
+                 ),
                 if(taskProvider.isAnyTodoTaskLongPressed())  IconButton(
                     onPressed: (){
                       showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
                     },
                     icon: const Icon(
                         Icons.delete_rounded,
-                        size: 30.0,
+                        size: 28.0,
                     )
                 ),
 
@@ -79,9 +77,9 @@ class _HomeState extends State<Home> {
          context: context,
          builder: (BuildContext context){
            return AlertDialog(
-            title: const Text("Are you sure?"),
+            title: const Text("Confirm Action"),
             content: const Text(
-                "Set selected task as finished?",
+                "Do you want to change the status of the selected task(s)?",
               style: TextStyle(
                 fontSize: 17.0
               ),
