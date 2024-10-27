@@ -13,7 +13,7 @@ void main() {
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (context)=>TaskProvider()),
     ],
-      child: TodoApp(),
+      child: const TodoApp(),
     )
   );
 }

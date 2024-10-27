@@ -53,7 +53,6 @@ class _HomeState extends State<Home> {
             body: GestureDetector(
               onTap: (){ // this on tap ensures that if i click any area in body then it will unselect all selected item
                 taskProvider.toggleLongPressStatusForAllSelectedTasks();
-                print('on tap from home screen');
               },
               child: ListView.builder(
                   itemCount: inCompletedTodos.length,
