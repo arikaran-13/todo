@@ -199,7 +199,6 @@ class _CreateTaskState extends State<CreateTask> {
                                   month = DateTime.now().month;
                                   day = DateTime.now().day;
                                 }
-
                                 if (pickedTime != null) {
                                   hour = pickedTime!.hour;
                                   min = pickedTime!.minute;
@@ -275,7 +274,6 @@ class _CreateTaskState extends State<CreateTask> {
 
   bool isPickedDateAndTimeNotEmpty(){
     bool res = pickedDate != null || pickedTime!=null;
-    print('res: $res');
     return res ;
   }
 
@@ -294,7 +292,6 @@ class _CreateTaskState extends State<CreateTask> {
            scheduleNotification
        );
      }
-
   }
 
   Future<void> showDatePickerForRemainder() async{
@@ -302,12 +299,10 @@ class _CreateTaskState extends State<CreateTask> {
         context: context,
         firstDate: DateTime.now(),
         lastDate: DateTime(6000));
-
     pickedTime = await showTimePicker(
        context: context,
        initialTime: const TimeOfDay(hour: 12,minute: 0)
    );
-
    formattedRemainderTime = "${pickedTime?.hour}:${pickedTime!.minute < 10 ? '0${pickedTime?.minute}' : '${pickedTime?.minute}'}";
    formattedRemainderDate = '${getWeekOfTheDay(pickedDate!.weekday)}, ${pickedDate?.day} ${getMonthName(pickedDate!.month)}';
   }
