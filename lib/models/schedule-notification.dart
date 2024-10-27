@@ -4,7 +4,7 @@ class ScheduleNotification{
   int day;
   int hour;
   int min;
-
+  bool isScheduledDateAndTimeSelected = false;
   ScheduleNotification({
     int selectedYear = 0,
     int selectedMonth = 0,
@@ -28,6 +28,7 @@ class ScheduleNotification{
   set setSelectedDay(int selectedDay) => day = selectedDay;
   set setSelectedHour(int selectedHour) => hour = selectedHour;
   set setSelectedMin(int selectedMin) => min = selectedMin;
+  set setSelectedDateAndTimeSelected(bool status) => isScheduledDateAndTimeSelected = status;
 
 
 

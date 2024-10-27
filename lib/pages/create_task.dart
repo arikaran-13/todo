@@ -212,6 +212,7 @@ class _CreateTaskState extends State<CreateTask> {
                                 scheduleNotification.setSelectedDay = day;
                                 scheduleNotification.setSelectedYear = year;
                                 scheduleNotification.setSelectedMonth = month;
+                                scheduleNotification.setSelectedDateAndTimeSelected = true;
                             },
                             label: Padding(
                               padding: const EdgeInsets.all(5.0),

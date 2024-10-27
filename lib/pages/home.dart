@@ -23,6 +23,7 @@ class _HomeState extends State<Home> {
               title: const Text("Todo"),
               backgroundColor: Colors.yellow,
               elevation: 0,
+              centerTitle: true,
               actions: [
                 if(taskProvider.isAnyTodoTaskLongPressed()) IconButton(
                     onPressed: (){

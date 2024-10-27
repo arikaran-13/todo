@@ -51,7 +51,7 @@ class TaskProvider extends ChangeNotifier{
       ScheduleNotification scheduleNotification
       ){
     if(isTaskExisting(taskId)){
-      updateTodo(taskName,dueDate,dueTime,taskId,remainderDate,remainderTime);
+      updateTodo(taskName,dueDate,dueTime,taskId,remainderDate,remainderTime,scheduleNotification);
       return;
     }
     Todo newTodo = createNewTodo(taskName,dueDate,dueTime,remainderDate,remainderTime);
@@ -102,13 +102,14 @@ class TaskProvider extends ChangeNotifier{
     return _todos.any((todo)=>todo.taskId==taskId);
   }
 
-  void updateTodo(String taskName, String dueDate, String dueTime,String taskId,String remainderDate , String remainderTime) {
+  void updateTodo(String taskName, String dueDate, String dueTime,String taskId,String remainderDate , String remainderTime,ScheduleNotification scheduleNotification) {
     var todo = getTaskById(taskId);
     todo.setTaskName = taskName;
     todo.setDueDate = dueDate;
     todo.setDueTime = dueTime;
     todo.setRemainderTime = remainderTime;
     todo.setRemainderDate = remainderDate;
+    createNotification(todo, scheduleNotification);
     notifyListeners();
   }
 
@@ -128,17 +129,22 @@ class TaskProvider extends ChangeNotifier{
   }
 
   void createNotification(Todo todo, ScheduleNotification scheduleNotification) {
-    NotificationService().scheduleNotification(
-      title: "⏰ Reminder: ${todo.taskName}",
-      body: "Don't forget! Finish '${todo.taskName}' by ${todo.dueDate} at ${todo.dueTime}. You've got this! 💪",
-      scheduledDateTime: DateTime(
-        scheduleNotification.year,
-        scheduleNotification.month,
-        scheduleNotification.day,
-        scheduleNotification.hour,
-        scheduleNotification.min,
-      ),
-    );
+    DateTime dateTime = DateTime(scheduleNotification.year,scheduleNotification.month,scheduleNotification.day,scheduleNotification.hour,scheduleNotification.min);
+    if(!scheduleNotification.isScheduledDateAndTimeSelected){
+      log.e("Remainder not set for task ${todo.taskName}");
+      return;
+    }
+    if(dateTime.isAfter(DateTime.now())) {
+     NotificationService().scheduleNotification(
+         title: "⏰ Reminder: ${todo.taskName}",
+         body: "Don't forget! Finish '${todo.taskName}' by ${todo
+             .dueDate} at ${todo.dueTime}. You've got this! 💪",
+         scheduledDateTime: dateTime
+     );
+   }
+   else{
+     log.e("Remainder date time is in future/past");
+   }
   }
 
 }
