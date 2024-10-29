@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/models/todo.dart';
 import 'package:todo/notification/notification.dart';
 import 'package:todo/provider/task_provider.dart';
 import 'package:todo/routes/routes.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(TodoAdapter());
+  await Hive.openBox<Todo>('todoBox');
   NotificationService().initNotification();
   tz.initializeTimeZones();
   runApp(

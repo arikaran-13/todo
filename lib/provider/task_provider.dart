@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:todo/models/schedule-notification.dart';
+import 'package:todo/storage/todo_storage.dart';
 import '../models/todo.dart';
 import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
@@ -10,10 +11,14 @@ import '../notification/notification.dart';
 
 class TaskProvider extends ChangeNotifier{
 
-  final List<Todo> _todos = [Todo(taskId: "id1",taskName: "Eat Dinner")];
+  List<Todo> _todos = TodoStorage.getAllTodos();
   var log = Logger();
   var uuid = const Uuid();
   List<Todo> get todos => _todos;
+
+  void reloadTodos(){
+    _todos = TodoStorage.getAllTodos();
+  }
 
   int getLengthOfTodos(){
     return _todos.length;
@@ -61,8 +66,9 @@ class TaskProvider extends ChangeNotifier{
       return;
     }
     Todo newTodo = createNewTodo(taskName,dueDate,dueTime,remainderDate,remainderTime);
+    TodoStorage.saveTodo(newTodo.taskId,newTodo);
     createNotification(newTodo,scheduleNotification);
-    _todos.add(newTodo);
+    reloadTodos();
     notifyListeners();
   }
 
@@ -83,14 +89,8 @@ class TaskProvider extends ChangeNotifier{
   }
 
   Todo getTaskById(String taskId){
-    var task = _todos.where((todo) => todo.taskId == taskId).toList();
-    if(task.length>1){
-      log.e('There is more than one task with same task id');
-    }
-    if(task.isEmpty){
-      log.e("Cannot able to find the match for task id $taskId");
-    }
-    return task[0];
+    Todo? todo = TodoStorage.getTodoTaskById(taskId);
+    return todo!;
   }
 
   void removeTask(String taskId){
@@ -112,13 +112,15 @@ class TaskProvider extends ChangeNotifier{
     return _todos.any((todo)=>todo.isCompleted);
   }
   void updateTodo(String taskName, String dueDate, String dueTime,String taskId,String remainderDate , String remainderTime,ScheduleNotification scheduleNotification) {
-    var todo = getTaskById(taskId);
-    todo.setTaskName = taskName;
-    todo.setDueDate = dueDate;
-    todo.setDueTime = dueTime;
-    todo.setRemainderTime = remainderTime;
-    todo.setRemainderDate = remainderDate;
-    createNotification(todo, scheduleNotification);
+    var existingTodo = getTaskById(taskId);
+    existingTodo.setTaskName = taskName;
+    existingTodo.setDueDate = dueDate;
+    existingTodo.setDueTime = dueTime;
+    existingTodo.setRemainderTime = remainderTime;
+    existingTodo.setRemainderDate = remainderDate;
+    TodoStorage.updateTodoByTaskId(taskId, existingTodo);
+    reloadTodos();
+    createNotification(existingTodo, scheduleNotification);
     notifyListeners();
   }
 

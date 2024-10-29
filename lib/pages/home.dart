@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/storage/todo_storage.dart';
 import 'package:todo/widgets/todo_tile.dart';
 import 'package:todo/provider/task_provider.dart';
 import 'package:todo/routes/routes.dart';
@@ -26,6 +27,11 @@ class _HomeState extends State<Home> {
               elevation: 0,
               centerTitle: true,
               actions: [
+                //Todo: remove this button after development
+                IconButton(icon: Icon(Icons.delete_forever),
+                  onPressed: (){
+                   TodoStorage.deleteAll();
+                  },),
                if(taskProvider.isAnyTodoTaskLongPressed())
                  Checkbox(
                      value: taskProvider.isAnyTodoTaskCompleted(),

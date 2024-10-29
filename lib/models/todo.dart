@@ -1,12 +1,25 @@
 
+import 'package:hive/hive.dart';
+
+part 'todo.g.dart';
+
+@HiveType(typeId: 0)
 class Todo {
+  @HiveField(0)
   String _taskid;
+  @HiveField(1)
   String _taskName;
+  @HiveField(2)
   bool _isCompleted;
+  @HiveField(3)
   bool _isLongPress;
+  @HiveField(4)
   String _dueDate;
+  @HiveField(5)
   String _dueTime;
+  @HiveField(6)
   String _remainderDate;
+  @HiveField(7)
   String _remainderTime;
 
   Todo({
@@ -44,5 +57,10 @@ class Todo {
   set setDueTime(String dueTime) => _dueTime = dueTime;
   set setRemainderDate(String remainderDate) => _remainderDate = remainderDate;
   set setRemainderTime(String remainderTime) => _remainderTime = remainderTime;
+
+  @override
+  String toString() {
+    return 'Todo(taskId: $taskId taskName: $taskName taskCompletionStatus: $isCompleted)';
+  }
 
 }
