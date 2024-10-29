@@ -1,6 +1,6 @@
 # Todo
 
-A Simple Todo app with Local database
+A Simple Todo app with Local database Hive!
 
 ## Getting Started
 
