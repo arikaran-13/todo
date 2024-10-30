@@ -31,6 +31,7 @@ class _TodoTileState extends State<TodoTile> {
         );
       },
       onLongPress: (){
+        print('long press from todo tile');
         taskProvider.toggleLongPressStatus(todo.taskId);
       },
       child: Padding(

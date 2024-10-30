@@ -85,7 +85,7 @@ class _CreateTaskState extends State<CreateTask> {
               actions: [
                 if(isInitialised)Checkbox(value: taskProvider.getTaskById(taskId!).isCompleted, onChanged: (b){
                     isCompleted = !isCompleted;
-                    taskProvider.setTaskCompletionStatus(taskId!);
+                    taskProvider.toggleLongPressStatus(taskId!);
                 }),
                 if(isInitialised)Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),

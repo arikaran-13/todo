@@ -74,4 +74,34 @@ class TodoStorage {
     log.i("Deleted todo box");
   }
 
+  static void updateTodoTask(String taskId, bool longPressStatus) {
+   Todo? todo =  todoBox.get(taskId);
+   if(todo == null){
+     log.e("Task not exist for task id $taskId");
+     return;
+   }
+   todo.setLongPressStatus = longPressStatus;
+   todoBox.put(taskId, todo);
+
+
+  }
+
+  static void deleteAllTodoLongPressedTasks() {
+    getAllTodos().where((todo)=>todo.isLongPress).forEach((todo){
+      todoBox.delete(todo.taskId);
+    });
+  }
+
+  static void updateAllTodoLongPressStatus() {
+    getAllTodos().where((todo)=>todo.isLongPress).forEach((todo){
+       todo.setLongPressStatus = !todo.isLongPress;
+      todoBox.put(todo.taskId, todo);
+    });
+  }
+
+  static void toggleTodoTaskStatus(Todo todo) {
+    todoBox.put(todo.taskId, todo);
+  }
+
+
 }

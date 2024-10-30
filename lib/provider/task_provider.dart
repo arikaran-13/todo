@@ -43,12 +43,13 @@ class TaskProvider extends ChangeNotifier{
   }
 
   void removeAllTaskLongPressed(){
-    _todos.removeWhere((todo)=>todo.isLongPress);
+    TodoStorage.deleteAllTodoLongPressedTasks();
+    reloadTodos();
     notifyListeners();
   }
 
   void toggleLongPressStatusForAllSelectedTasks(){
-    _todos.where((todo)=>todo.isLongPress).forEach((todo)=>todo.setLongPressStatus = !todo.isLongPress);
+    TodoStorage.updateAllTodoLongPressStatus();
     notifyListeners();
   }
 
@@ -90,6 +91,9 @@ class TaskProvider extends ChangeNotifier{
 
   Todo getTaskById(String taskId){
     Todo? todo = TodoStorage.getTodoTaskById(taskId);
+    if(todo==null){
+      log.e("Cannot find todo tasks for $taskId");
+    }
     return todo!;
   }
 
@@ -158,5 +162,11 @@ class TaskProvider extends ChangeNotifier{
      log.e("Remainder date time is in future/past");
    }
   }
+
+  void updateTodoTaskLongPressStatusByTaskId(String taskId, bool longPressStatus) {
+     TodoStorage.updateTodoTask(taskId,longPressStatus);
+     notifyListeners();
+  }
+
 
 }
