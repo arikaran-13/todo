@@ -111,8 +111,6 @@ class TaskProvider extends ChangeNotifier{
    return todo.isCompleted;
   }
 
-
-
   void removeTask(String taskId) {
     if (taskId.isNotEmpty && TodoStorage.isTodoTaskExisting(taskId)) {
       TodoStorage.deleteTodo(taskId);
