@@ -189,6 +189,4 @@ class TaskProvider extends ChangeNotifier{
      TodoStorage.updateTodoTask(taskId,longPressStatus);
      notifyListeners();
   }
-
-
 }
