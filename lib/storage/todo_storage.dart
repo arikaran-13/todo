@@ -17,20 +17,10 @@ class TodoStorage {
   }
 
   static Todo? getTodoTaskById(String todoTaskId){
-    int count =  getAllTodos().where((todo)=>todo.taskId == todoTaskId).toList().length;
-    late Todo? todo;
-    if(count>1){
-     log.w("More than one todo task found for same taskId $todoTaskId");
-    }
-    try {
-      todo = todoBox.get(todoTaskId);
-    }catch(e) {
-      log.i("Error occurred cannot retrieve task for id $todoTaskId");
-    }
-    if(todo==null){
-      log.w("Error occurred , Cannot find todo task for id $todoTaskId");
-    }
-    return todo;
+      if(todoTaskId.isEmpty || !isTodoTaskExisting(todoTaskId)){
+        log.e("Todo task is not existing for task id: $todoTaskId");
+      }
+      return todoBox.get(todoTaskId);
     }
 
   static List<Todo> getAllTodos(){
@@ -82,8 +72,6 @@ class TodoStorage {
    }
    todo.setLongPressStatus = longPressStatus;
    todoBox.put(taskId, todo);
-
-
   }
 
   static void deleteAllTodoLongPressedTasks() {
@@ -99,9 +87,64 @@ class TodoStorage {
     });
   }
 
-  static void toggleTodoTaskStatus(Todo todo) {
-    todoBox.put(todo.taskId, todo);
+  static List<Todo> inCompleteTodos(){
+    return getAllTodos().where((todo)=>!todo.isCompleted).toList();
   }
+
+
+  static List<Todo> completedTodos(){
+    return getAllTodos().where((todo)=>todo.isCompleted).toList();
+  }
+
+  static bool anyTodoTaskLongPressed(){
+    return getAllTodos().any((todo)=>todo.isLongPress);
+  }
+
+  static void deleteTodo(String taskId) {
+    if (!isTodoTaskExisting(taskId)) {
+      log.w("Cannot delete todo task: Task not found for id: $taskId");
+      return;
+    }
+    todoBox.delete(taskId);
+  }
+
+  static bool isTodoTaskExisting(String taskId){
+    return getAllTodos().any((todo)=>todo.taskId == taskId);
+  }
+
+  static bool anyTaskCompleted(){
+    return getAllTodos().any((todo)=>todo.isCompleted);
+  }
+
+  static void toggleAllLongPressedTaskCompletedStatus(){
+    getAllTodos().where((todo)=>todo.isLongPress).forEach((todo){
+      todo.setCompletedStatus = !todo.isCompleted;
+      todoBox.put(todo.taskId, todo);
+    });
+  }
+
+  static void toggleLongPressedStatusForTaskId(String taskId){
+    if(isTodoTaskExisting(taskId)){
+      var todo = todoBox.get(taskId);
+      todo?.setLongPressStatus = !todo.isLongPress;
+      todoBox.put(taskId, todo!);
+      print(todoBox.get(taskId));
+    }
+    else{
+      log.i("Task not found for id $taskId");
+    }
+  }
+
+  static void updateTodoTaskCompletionStatusForParticularTaskId(String taskId) {
+    if(isTodoTaskExisting(taskId)){
+       var todo = todoBox.get(taskId);
+       todo?.setCompletedStatus = !todo.isCompleted;
+       todoBox.put(taskId, todo!);
+    }else{
+      log.w("Task Not found for id: $taskId");
+    }
+  }
+
 
 
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:todo/models/schedule-notification.dart';
 import 'package:todo/models/todo.dart';
 import 'package:todo/provider/task_provider.dart';
+import 'package:todo/storage/todo_storage.dart';
 
 class CreateTask extends StatefulWidget {
   const CreateTask({super.key});
@@ -17,7 +18,7 @@ class _CreateTaskState extends State<CreateTask> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   bool isInitialised = false;
-  String? taskId;
+  String taskId ='';
   String formattedRemainderDate = '';
   String formattedRemainderTime = '';
   DateTime? pickedDate;
@@ -83,10 +84,12 @@ class _CreateTaskState extends State<CreateTask> {
               title: const Text("New Task"),
               elevation: 0.0,
               actions: [
-                if(isInitialised)Checkbox(value: taskProvider.getTaskById(taskId!).isCompleted, onChanged: (b){
-                    isCompleted = !isCompleted;
-                    taskProvider.toggleLongPressStatus(taskId!);
-                }),
+                if(isInitialised)Checkbox(
+                    value: taskProvider.isTodoTaskCompleted(taskId),
+                    onChanged: (b){
+                    taskProvider.setTaskCompletionStatus(taskId);
+                }
+                ),
                 if(isInitialised)Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
                     child: IconButton(
@@ -94,8 +97,11 @@ class _CreateTaskState extends State<CreateTask> {
                         size: 30.0,
                         ),
                     onPressed: (){
-                        taskProvider.removeTask(taskId??"");
-                        Navigator.of(context).pop();
+                       if(taskId.isNotEmpty && TodoStorage.isTodoTaskExisting(taskId)) {
+                         taskProvider.removeTask(taskId);
+                       }
+                         Navigator.of(context).pop();
+
                     },
                     )
                 )

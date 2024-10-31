@@ -25,21 +25,23 @@ class TaskProvider extends ChangeNotifier{
   }
 
   List<Todo> getInCompletedTodos(){
-    return _todos.where((todo)=>!todo.isCompleted).toList();
+    return TodoStorage.inCompleteTodos();
   }
 
   List<Todo> getCompletedTodos(){
-    return _todos.where((todo)=>todo.isCompleted).toList();
+    return TodoStorage.completedTodos();
   }
 
+  //TODO: need to update this
   void toggleLongPressStatus(String taskId){
-    var todo = getTaskById(taskId);
-    todo.setLongPressStatus= !todo.isLongPress;
+    TodoStorage.toggleLongPressedStatusForTaskId(taskId);
+    reloadTodos(); // check whether its needed or not
     notifyListeners();
   }
 
+
   bool isAnyTodoTaskLongPressed(){
-    return _todos.any((todo)=>todo.isLongPress);
+    return TodoStorage.anyTodoTaskLongPressed();
   }
 
   void removeAllTaskLongPressed(){
@@ -74,14 +76,15 @@ class TaskProvider extends ChangeNotifier{
   }
 
   void setTaskCompletionStatus(String taskId){
-     var todo = getTaskById(taskId);
-     todo.setCompletedStatus = !todo.isCompleted;
+     TodoStorage.updateTodoTaskCompletionStatusForParticularTaskId(taskId);
      notifyListeners();
   }
 
+  //TODO: need to update this with hive
   void clearRemainderInfo({String? taskId}) {
     if(taskId!.isNotEmpty) {
-      var todo = getTaskById(taskId);
+      Todo? todo = getTaskById(taskId);
+      if(todo == null)return;
       todo.setRemainderDate = '';
       todo.setRemainderTime = '';
 
@@ -89,34 +92,48 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Todo getTaskById(String taskId){
+  Todo? getTaskById(String taskId){
     Todo? todo = TodoStorage.getTodoTaskById(taskId);
     if(todo==null){
       log.e("Cannot find todo tasks for $taskId");
     }
-    return todo!;
+    return todo;
   }
 
-  void removeTask(String taskId){
-    if(isTaskExisting(taskId)){
-      var delete = getTaskById(taskId);
-      _todos.remove(delete);
+  bool isTodoTaskCompleted(String taskId){
+   Todo? todo =  getTaskById(taskId);
+   if(todo == null){
+     return false; // if the task is not present then its already deleted
+   }
+   return todo.isCompleted;
+  }
+
+
+
+  void removeTask(String taskId) {
+    if (taskId.isNotEmpty && TodoStorage.isTodoTaskExisting(taskId)) {
+      TodoStorage.deleteTodo(taskId);
+      reloadTodos();
+      notifyListeners();
+    } else {
+      log.w("Cannot delete todo task: Task not found for id: $taskId");
     }
-    else{
-      log.e("Cannot delete , Task $taskId not found");
-    }
-    notifyListeners();
   }
 
   bool isTaskExisting(String taskId){
-    return _todos.any((todo)=>todo.taskId==taskId);
+    return TodoStorage.isTodoTaskExisting(taskId);
   }
 
+
   bool isAnyTodoTaskCompleted(){
-    return _todos.any((todo)=>todo.isCompleted);
+    return TodoStorage.anyTaskCompleted();
   }
+
   void updateTodo(String taskName, String dueDate, String dueTime,String taskId,String remainderDate , String remainderTime,ScheduleNotification scheduleNotification) {
-    var existingTodo = getTaskById(taskId);
+    Todo? existingTodo = getTaskById(taskId);
+    if(existingTodo == null){
+      return;
+    }
     existingTodo.setTaskName = taskName;
     existingTodo.setDueDate = dueDate;
     existingTodo.setDueTime = dueTime;
@@ -128,8 +145,10 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  //TODO: need to update this
   void checkAllLongPressedTasks() {
-    _todos.where((todo)=>todo.isLongPress).forEach((todo)=> todo.setCompletedStatus = !todo.isCompleted);
+    TodoStorage.toggleAllLongPressedTaskCompletedStatus();
+    reloadTodos(); // check this is needed
     notifyListeners();
   }
 
