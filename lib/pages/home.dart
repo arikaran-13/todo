@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var selectedIndex =0;
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskProvider>(
@@ -25,35 +26,7 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.yellow,
               elevation: 0,
               centerTitle: true,
-              actions: [
-                //Todo: remove this button after development
-                IconButton(icon: Icon(Icons.delete_forever),
-                  onPressed: (){
-                   TodoStorage.deleteAll();
-                  },),
-               if(taskProvider.isIncompleteTodoTasksLongPressed())
-                 Checkbox(
-                     value: taskProvider.isAnyTodoTaskCompleted(),
-                     onChanged: (val){
-                  showAlertDialogBoxForCheckAllTaskButton(taskProvider);
-                },
-                 ),
-                if(taskProvider.isIncompleteTodoTasksLongPressed())IconButton(
-                    onPressed: (){
-                      showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
-                    },
-                    icon: const Icon(
-                        Icons.delete_rounded,
-                        size: 28.0,
-                    )
-                ),
-                IconButton(
-                    onPressed: (){
-                      Navigator.of(context).pushNamed(TodoAppRoutes.completedTask);
-                    },
-                    icon: const Icon(Icons.check_circle_outline)
-                )
-              ],
+              actions: _buildAppBarActions(taskProvider),
             ),
             body: GestureDetector(
               onTap: (){ // this on tap ensures that if i click any area in body then it will unselect all selected item
@@ -165,4 +138,37 @@ class _HomeState extends State<Home> {
       },
     );
   }
+
+  List<Widget> _buildAppBarActions(TaskProvider taskProvider){
+    return [
+      //Todo: remove this button after development
+      IconButton(icon: Icon(Icons.delete_forever),
+        onPressed: (){
+          TodoStorage.deleteAll();
+        },),
+      if(taskProvider.isIncompleteTodoTasksLongPressed())
+        Checkbox(
+          value: taskProvider.isAnyTodoTaskCompleted(),
+          onChanged: (val){
+            showAlertDialogBoxForCheckAllTaskButton(taskProvider);
+          },
+        ),
+      if(taskProvider.isIncompleteTodoTasksLongPressed())IconButton(
+          onPressed: (){
+            showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
+          },
+          icon: const Icon(
+            Icons.delete_rounded,
+            size: 28.0,
+          )
+      ),
+      IconButton(
+          onPressed: (){
+            Navigator.of(context).pushNamed(TodoAppRoutes.completedTask);
+          },
+          icon: const Icon(Icons.check_circle_outline)
+      )
+    ];
+  }
+
 }
