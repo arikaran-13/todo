@@ -32,14 +32,14 @@ class _HomeState extends State<Home> {
                   onPressed: (){
                    TodoStorage.deleteAll();
                   },),
-               if(taskProvider.isAnyTodoTaskLongPressed())
+               if(taskProvider.isIncompleteTodoTasksLongPressed())
                  Checkbox(
                      value: taskProvider.isAnyTodoTaskCompleted(),
                      onChanged: (val){
                   showAlertDialogBoxForCheckAllTaskButton(taskProvider);
                 },
                  ),
-                if(taskProvider.isAnyTodoTaskLongPressed())IconButton(
+                if(taskProvider.isCompletedTodoTasksLongPressed())IconButton(
                     onPressed: (){
                       showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
                     },

@@ -27,14 +27,14 @@ class _CompletedTasksState extends State<CompletedTasks> {
               elevation: 0,
               centerTitle: true,
               actions: [
-                if(taskProvider.isAnyTodoTaskLongPressed())
+                if(taskProvider.isCompletedTodoTasksLongPressed())
                   Checkbox(
                     value: true,
                     onChanged: (val){
                       //showAlertDialogBoxForCheckAllTaskButton(taskProvider);
                     },
                   ),
-                if(taskProvider.isAnyTodoTaskLongPressed())  IconButton(
+                if(taskProvider.isCompletedTodoTasksLongPressed())  IconButton(
                     onPressed: (){
                     //  showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
                     },

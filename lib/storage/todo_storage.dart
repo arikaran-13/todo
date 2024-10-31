@@ -100,6 +100,15 @@ class TodoStorage {
     return getAllTodos().any((todo)=>todo.isLongPress);
   }
 
+  static bool isCompletedTodoTasksLongPressed(){
+    return getAllTodos().where((todo)=>todo.isCompleted).any((todo)=>todo.isLongPress);
+  }
+
+
+  static bool isInCompleteTodoTasksLongPressed(){
+    return getAllTodos().where((todo)=>!todo.isCompleted).any((todo)=>todo.isLongPress);
+  }
+
   static void deleteTodo(String taskId) {
     if (!isTodoTaskExisting(taskId)) {
       log.w("Cannot delete todo task: Task not found for id: $taskId");

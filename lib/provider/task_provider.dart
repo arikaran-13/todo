@@ -39,9 +39,12 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  bool isCompletedTodoTasksLongPressed(){
+    return TodoStorage.isCompletedTodoTasksLongPressed();
+  }
 
-  bool isAnyTodoTaskLongPressed(){
-    return TodoStorage.anyTodoTaskLongPressed();
+  bool isIncompleteTodoTasksLongPressed(){
+    return TodoStorage.isInCompleteTodoTasksLongPressed();
   }
 
   void removeAllTaskLongPressed(){
