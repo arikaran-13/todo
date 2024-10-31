@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
                   showAlertDialogBoxForCheckAllTaskButton(taskProvider);
                 },
                  ),
-                if(taskProvider.isCompletedTodoTasksLongPressed())IconButton(
+                if(taskProvider.isIncompleteTodoTasksLongPressed())IconButton(
                     onPressed: (){
                       showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
                     },
