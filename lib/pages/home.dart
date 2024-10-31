@@ -85,67 +85,85 @@ class _HomeState extends State<Home> {
   }
 
   void showAlertDialogBoxForCheckAllTaskButton(TaskProvider taskProvider) {
-     showDialog(
-         context: context,
-         builder: (BuildContext context){
-           return AlertDialog(
-            title: const Text("Confirm Action"),
-            content: const Text(
-                "Do you want to change the status of the selected task(s)?",
-              style: TextStyle(
-                fontSize: 17.0
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            "Confirm Action",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            "Do you want to change the status of the selected task(s)?",
+            style: TextStyle(fontSize: 17.0),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "No",
+                style: TextStyle(color: Colors.grey),
               ),
             ),
-            actions: [
-              TextButton(
-                  onPressed: (){
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("No")
-              ),
-              TextButton(onPressed: (){
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.amberAccent),
+              onPressed: () {
                 taskProvider.checkAllLongPressedTasks();
                 Navigator.of(context).pop();
               },
-                  child: const Text(
-                      "Yes"
-                  )
-              ),
-            ],
-         );
-         }
-         );
-  }
-
-  void showAlertDialogBoxForToDeleteTodoTasks(TaskProvider taskProvider) {
-    showDialog(context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: const Text("Are you sure?"),
-            content: const Text(
-                "Delete tasks?",
-              style: TextStyle(
-                fontSize: 17.0
+              child: const Text(
+                  "Yes",
+                style: TextStyle(
+                  color: Colors.black
+                ),
               ),
             ),
-            actions: [
-              TextButton(
-                  onPressed: (){
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("No")
+          ],
+        );
+      },
+    );
+  }
+  void showAlertDialogBoxForToDeleteTodoTasks(TaskProvider taskProvider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            "Confirm Action",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            "Delete selected tasks?",
+            style: TextStyle(fontSize: 17.0),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "No",
+                style: TextStyle(color: Colors.grey),
               ),
-              TextButton(onPressed: (){
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              onPressed: () {
                 taskProvider.removeAllTaskLongPressed();
                 Navigator.of(context).pop();
               },
-                  child: const Text(
-                      "Yes"
-                  )
+              child: const Text(
+                  "Yes",
+                style: TextStyle(
+                  color: Colors.black
+                ),
               ),
-            ],
-          );
-        }
+            ),
+          ],
+        );
+      },
     );
   }
 }
