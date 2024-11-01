@@ -47,6 +47,10 @@ class TaskProvider extends ChangeNotifier{
     return TodoStorage.isInCompleteTodoTasksLongPressed();
   }
 
+  bool isAnyTodoTaskLongPressed(){
+    return TodoStorage.anyTodoTaskLongPressed();
+  }
+
   void removeAllTaskLongPressed(){
     TodoStorage.deleteAllTodoLongPressedTasks();
     reloadTodos();
@@ -135,6 +139,7 @@ class TaskProvider extends ChangeNotifier{
     if(existingTodo == null){
       return;
     }
+    taskName = taskName.trim();
     existingTodo.setTaskName = taskName;
     existingTodo.setDueDate = dueDate;
     existingTodo.setDueTime = dueTime;

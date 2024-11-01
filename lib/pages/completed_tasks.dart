@@ -21,30 +21,6 @@ class _CompletedTasksState extends State<CompletedTasks> {
           var completedTodos = taskProvider.getCompletedTodos();
           return  Scaffold(
             backgroundColor: Colors.yellow[200],
-            appBar: AppBar(
-              title: const Text("Completed Todo(s)"),
-              backgroundColor: Colors.yellow,
-              elevation: 0,
-              centerTitle: true,
-              actions: [
-                if(taskProvider.isCompletedTodoTasksLongPressed())
-                  Checkbox(
-                    value: true,
-                    onChanged: (val){
-                      //showAlertDialogBoxForCheckAllTaskButton(taskProvider);
-                    },
-                  ),
-                if(taskProvider.isCompletedTodoTasksLongPressed())  IconButton(
-                    onPressed: (){
-                    //  showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
-                    },
-                    icon: const Icon(
-                      Icons.delete_rounded,
-                      size: 28.0,
-                    )
-                ),
-              ],
-            ),
             body: GestureDetector(
               onTap: (){
                 taskProvider.toggleLongPressStatusForAllSelectedTasks();

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/pages/completed_tasks.dart';
+import 'package:todo/pages/in_complete_tasks.dart';
 import 'package:todo/storage/todo_storage.dart';
-import 'package:todo/widgets/todo_tile.dart';
 import 'package:todo/provider/task_provider.dart';
 import 'package:todo/routes/routes.dart';
 
@@ -14,11 +15,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var selectedIndex =0;
+
+  final List<Widget>_widgets = [
+    InCompleteTasks(),
+    CompletedTasks(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskProvider>(
       builder: (context,taskProvider,child) {
-        var inCompletedTodos = taskProvider.getInCompletedTodos();
         return  Scaffold(
             backgroundColor: Colors.yellow[200],
             appBar: AppBar(
@@ -28,20 +34,7 @@ class _HomeState extends State<Home> {
               centerTitle: true,
               actions: _buildAppBarActions(taskProvider),
             ),
-            body: GestureDetector(
-              onTap: (){ // this on tap ensures that if i click any area in body then it will unselect all selected item
-                taskProvider.toggleLongPressStatusForAllSelectedTasks();
-              },
-              child: ListView.builder(
-                  itemCount: inCompletedTodos.length,
-                  itemBuilder: (context,index){
-                    return TodoTile(
-                      todo: inCompletedTodos[index],
-                      taskProvider: taskProvider,
-                    );
-                  },
-              ),
-            ),
+            body: _widgets[selectedIndex],
           floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.yellow,
               onPressed: (){
@@ -50,6 +43,26 @@ class _HomeState extends State<Home> {
                 );
               },
               child: const Icon(Icons.add),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+             backgroundColor: Colors.yellow,
+              currentIndex: selectedIndex,
+              onTap: (currentSelectedIndex){
+               setState(() {
+                 selectedIndex = currentSelectedIndex;
+               });
+               taskProvider.toggleLongPressStatusForAllSelectedTasks(); // resetting long press status whenever switching between nav items
+              },
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: "Home"
+                ),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.check_circle),
+                    label: "Completed Todos"
+                )
+              ]
           ),
         );
       }
@@ -140,34 +153,62 @@ class _HomeState extends State<Home> {
   }
 
   List<Widget> _buildAppBarActions(TaskProvider taskProvider){
+       if(selectedIndex == 0){
+         return _buildAppBarActionForIncompleteTasks(taskProvider);
+       }
+       return _buildAppBarActionForCompletedTasks(taskProvider);
+  }
+
+  List<Widget>_buildAppBarActionForIncompleteTasks(TaskProvider taskProvider){
     return [
-      //Todo: remove this button after development
       IconButton(icon: Icon(Icons.delete_forever),
         onPressed: (){
           TodoStorage.deleteAll();
         },),
       if(taskProvider.isIncompleteTodoTasksLongPressed())
         Checkbox(
+          value: false,
+          onChanged: (val){
+            showAlertDialogBoxForCheckAllTaskButton(taskProvider);
+
+          },
+        ),
+      if(taskProvider.isIncompleteTodoTasksLongPressed())
+        IconButton(
+            onPressed: (){
+              showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
+            },
+            icon: const Icon(
+              Icons.delete_rounded,
+              size: 28.0,
+            )
+        ),
+    ];
+  }
+
+  List<Widget>_buildAppBarActionForCompletedTasks(TaskProvider taskProvider){
+    return [
+      IconButton(icon: Icon(Icons.delete_forever),
+        onPressed: (){
+          TodoStorage.deleteAll();
+        },),
+      if(taskProvider.isCompletedTodoTasksLongPressed())
+        Checkbox(
           value: taskProvider.isAnyTodoTaskCompleted(),
           onChanged: (val){
             showAlertDialogBoxForCheckAllTaskButton(taskProvider);
           },
         ),
-      if(taskProvider.isIncompleteTodoTasksLongPressed())IconButton(
-          onPressed: (){
-            showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
-          },
-          icon: const Icon(
-            Icons.delete_rounded,
-            size: 28.0,
-          )
-      ),
-      IconButton(
-          onPressed: (){
-            Navigator.of(context).pushNamed(TodoAppRoutes.completedTask);
-          },
-          icon: const Icon(Icons.check_circle_outline)
-      )
+      if(taskProvider.isCompletedTodoTasksLongPressed())
+        IconButton(
+            onPressed: (){
+              showAlertDialogBoxForToDeleteTodoTasks(taskProvider);
+            },
+            icon: const Icon(
+              Icons.delete_rounded,
+              size: 28.0,
+            )
+        ),
     ];
   }
 
