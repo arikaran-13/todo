@@ -80,6 +80,10 @@ class _CreateTaskState extends State<CreateTask> {
       return Scaffold(
         backgroundColor: Colors.deepPurple.shade300,
         appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.white
+          ),
+          centerTitle: true,
           backgroundColor: Colors.deepPurple,
           title: const Text(
             "Create Task",
