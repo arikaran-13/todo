@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/pages/completed_tasks.dart';
-import 'package:todo/pages/in_complete_tasks.dart';
+import 'package:todo/pages/widgets/completed_tasks.dart';
+import 'package:todo/pages/widgets/in_complete_tasks.dart';
 import 'package:todo/storage/todo_storage.dart';
 import 'package:todo/provider/task_provider.dart';
 import 'package:todo/routes/routes.dart';

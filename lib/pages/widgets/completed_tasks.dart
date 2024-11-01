@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/task_provider.dart';
-import '../routes/routes.dart';
-import '../widgets/todo_tile.dart';
+import '../../provider/task_provider.dart';
+import '../../routes/routes.dart';
+import '../../widgets/todo_tile.dart';
 
 class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});

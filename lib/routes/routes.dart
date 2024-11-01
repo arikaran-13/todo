@@ -1,6 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:todo/pages/completed_tasks.dart';
+import 'package:todo/pages/widgets/completed_tasks.dart';
 import 'package:todo/pages/create_task.dart';
 import 'package:todo/pages/home.dart';
 

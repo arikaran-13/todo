@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/provider/task_provider.dart';
 
-import '../widgets/todo_tile.dart';
+import '../../widgets/todo_tile.dart';
 
 class InCompleteTasks extends StatefulWidget {
   const InCompleteTasks({super.key});
