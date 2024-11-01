@@ -6,10 +6,10 @@ import 'package:todo/routes/routes.dart';
 
 class TodoTile extends StatefulWidget {
 
-   Todo todo;
-   TaskProvider taskProvider;
+   final Todo todo;
+   final TaskProvider taskProvider;
 
-   TodoTile({super.key,required this.todo,required this.taskProvider});
+   const TodoTile({super.key,required this.todo,required this.taskProvider});
 
   @override
   State<TodoTile> createState() => _TodoTileState();
@@ -31,36 +31,42 @@ class _TodoTileState extends State<TodoTile> {
         );
       },
       onLongPress: (){
-        print('long press from todo tile');
         taskProvider.toggleLongPressStatus(todo.taskId);
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.yellow,
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.deepPurple,
             border: Border.all(
-              color: longPressStatus? Colors.black : Colors.yellow,
+              color: longPressStatus? Colors.white : Colors.deepPurple,
               width: longPressStatus? 2.0 : 0
             )
           ),
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(15),
           child: ListTile(
             leading: Checkbox(
                 value: todo.isCompleted,
                 onChanged: (val){
                  taskProvider.setTaskCompletionStatus(todo.taskId);
               },
-              activeColor: Colors.black,
+              activeColor: Colors.white,
+              checkColor: Colors.black,
+              side: const BorderSide(
+                color: Colors.white
+              ),
             ),
             title: Text(
                 todo.taskName,
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 18.0,
+                  color: Colors.white,
                   decoration: todo.isCompleted
                       ? TextDecoration.lineThrough
-                      : TextDecoration.none
+                      : TextDecoration.none,
+                  decorationColor: Colors.white,
+                  decorationThickness: 2.0
                 ),
             ),
           ),

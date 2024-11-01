@@ -18,7 +18,7 @@ class _CreateTaskState extends State<CreateTask> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   bool isInitialised = false;
-  String taskId ='';
+  String taskId = '';
   String formattedRemainderDate = '';
   String formattedRemainderTime = '';
   DateTime? pickedDate;
@@ -36,9 +36,12 @@ class _CreateTaskState extends State<CreateTask> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if(!isInitialised){
-      var todoObj = ModalRoute.of(context)!.settings.arguments;
-      if(todoObj != null){
+    if (!isInitialised) {
+      var todoObj = ModalRoute
+          .of(context)!
+          .settings
+          .arguments;
+      if (todoObj != null) {
         var todo = todoObj as Todo;
         taskId = todo.taskId;
         _taskNameController.text = todo.taskName;
@@ -46,293 +49,283 @@ class _CreateTaskState extends State<CreateTask> {
         _timeController.text = todo.dueTime;
         formattedRemainderTime = todo.remainderTime;
         formattedRemainderDate = todo.remainderDate;
-        print('todo remainder time and date ${todo.remainderDate}${todo.remainderTime}');
-        isInitialised=true;
+        isInitialised = true;
       }
     }
   }
 
-  void _showDateTimePicker() async{
-   var pickedDate = await showDatePicker(
-        context: context,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(6000)
-    );
-   if(pickedDate==null)return;
-   _dateController.text = '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
+  void _showDateTimePicker() async {
+    var pickedDate = await showDatePicker(
+        context: context, firstDate: DateTime.now(), lastDate: DateTime(6000));
+    if (pickedDate == null) return;
+    _dateController.text =
+    '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
   }
 
-  void _showTimePicker() async{
-    var pickedTime =  await showTimePicker(
+  void _showTimePicker() async {
+    var pickedTime = await showTimePicker(
       initialTime: TimeOfDay.now(),
       context: context,
     );
-    if(pickedTime == null)return;
-    var formattedMin = pickedTime.minute <= 9 ? '0${pickedTime.minute}': '${pickedTime.minute}';
+    if (pickedTime == null) return;
+    var formattedMin = pickedTime.minute <= 9
+        ? '0${pickedTime.minute}'
+        : '${pickedTime.minute}';
     _timeController.text = '${pickedTime.hour}:$formattedMin';
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<TaskProvider>(
-        builder: (context,taskProvider,child){
-          return Scaffold(
-            backgroundColor: Colors.yellow[200],
-            appBar: AppBar(
-              backgroundColor: Colors.yellow,
-              title: const Text("New Task"),
-              elevation: 0.0,
-              actions: [
-                if(isInitialised)Checkbox(
-                    value: taskProvider.isTodoTaskCompleted(taskId),
-                    onChanged: (b){
+    return Consumer<TaskProvider>(builder: (context, taskProvider, child) {
+      return Scaffold(
+        backgroundColor: Colors.deepPurple.shade300,
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          title: const Text(
+            "Create Task",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          elevation: 0.0,
+          actions: [
+            if (isInitialised)
+              Checkbox(
+                  checkColor: Colors.black,
+                  activeColor: Colors.white,
+                  side: const BorderSide(
+                    color: Colors.white
+                  ),
+                  value: taskProvider.isTodoTaskCompleted(taskId),
+                  onChanged: (b) {
                     taskProvider.setTaskCompletionStatus(taskId);
-                }
-                ),
-                if(isInitialised)Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                    child: IconButton(
-                        icon: const Icon(Icons.delete_rounded,
-                        size: 30.0,
-                        ),
-                    onPressed: (){
-                       if(taskId.isNotEmpty && TodoStorage.isTodoTaskExisting(taskId)) {
-                         taskProvider.removeTask(taskId);
-                       }
-                         Navigator.of(context).pop();
-
+                  }),
+            if (isInitialised)
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.delete_rounded,
+                      size: 30.0,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (taskId.isNotEmpty &&
+                          TodoStorage.isTodoTaskExisting(taskId)) {
+                        taskProvider.removeTask(taskId);
+                      }
+                      Navigator.of(context).pop();
                     },
-                    )
-                )
+                  ))
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
+          child: Form(
+            key: _key,
+            child: ListView(
+              children: [
+                _buildLabel("What you need to do?"),
+                _buildTextField(_taskNameController, "Enter Task Name"),
+                const SizedBox(height: 40),
+                _buildLabel("Due date and time"),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDateTimeField(
+                        _dateController,
+                        "Select due date",
+                        _showDateTimePicker,
+                        Icons.calendar_today,
+                      ),
+                    ),
+                    if (_dateController.text.isNotEmpty)
+                      Expanded(
+                        child: _buildDateTimeField(
+                          _timeController,
+                          "Select time",
+                          _showTimePicker,
+                          Icons.access_time,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        await showDatePickerForRemainder();
+                        int year, month, day, hour, min;
+                        if (pickedDate != null) {
+                          year = pickedDate!.year;
+                          month = pickedDate!.month;
+                          day = pickedDate!.day;
+                        } else {
+                          year = DateTime
+                              .now()
+                              .year;
+                          month = DateTime
+                              .now()
+                              .month;
+                          day = DateTime
+                              .now()
+                              .day;
+                        }
+                        if (pickedTime != null) {
+                          hour = pickedTime!.hour;
+                          min = pickedTime!.minute;
+                        } else {
+                          hour = 9;
+                          min = 30;
+                        }
+                        scheduleNotification.setSelectedMin = min;
+                        scheduleNotification.setSelectedHour = hour;
+                        scheduleNotification.setSelectedDay = day;
+                        scheduleNotification.setSelectedYear = year;
+                        scheduleNotification.setSelectedMonth = month;
+                        scheduleNotification.setSelectedDateAndTimeSelected =
+                        true;
+                      },
+                      label: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          isRemainderDateAndNotEmpty()
+                              ? "Remind me at $formattedRemainderTime on $formattedRemainderDate"
+                              : "Set Reminder",
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.notifications_active_outlined,
+                        size: 20.0,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.deepPurple,
+                      ),
+                    ),
+                    if (isRemainderDateAndNotEmpty())
+                      IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            formattedRemainderDate = '';
+                            formattedRemainderTime = '';
+                          });
+                        },
+                      ),
+                  ],
+                ),
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
-              child: Form(
-                  key: _key,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "What you need to do?",
-                        style: _textStyleForLabel(),
-                      ),
-                      const SizedBox(height: 10.0),
-                      TextFormField(
-                        controller: _taskNameController,
-                        style: const TextStyle(
-                            fontSize: 20.0
-                        ),
-                        maxLines: null,
-                        decoration: const InputDecoration(
-                          hintText: "Enter Task Name",
-                        ),
-                      ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.deepPurple,
+          foregroundColor: Colors.white,
+          onPressed: () {
+            _createNewTask(taskProvider, taskId ?? '', scheduleNotification);
+            Navigator.pop(context);
+          },
+          heroTag: "FAB_create_new_task",
+          child: const Icon(Icons.check),
+        ),
+      );
+    });
+  }
 
-                      const SizedBox(height: 50),
-                      Text(
-                          "Due date and time",
-                          style: _textStyleForLabel()
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _dateController,
-                              style: const TextStyle(
-                                  fontSize: 20.0
-                              ),
-                              decoration: const InputDecoration(
-                                  hintText: "Select due date"
-                              ),
-                              onTap: _showDateTimePicker,
-                            ),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(0,0,5.0,0),
-                              child: IconButton(
-                                  icon: const Icon(
-                                      Icons.calendar_month,
-                                      size: 30,
-                                  ),
-                                  onPressed: ()=>_showDateTimePicker(),
-                              )
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30.0,),
-                      Row(
-                        children: [
-                          if(_dateController.text.isNotEmpty)Expanded(
-                            child: TextFormField(
-                              onTap: _showTimePicker,
-                              controller: _timeController,
-                              style: const TextStyle(
-                                  fontSize: 20.0
-                              ),
-                              decoration: const InputDecoration(
-                                  hintText: "Select time"
-                              ),
-                            ),
-                          ),
-                          if(_dateController.text.isNotEmpty)Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 5.0, 0),
-                            child: IconButton(
-                                onPressed: (){
-                                   _showTimePicker();
-                                },
-                                icon: const Icon(
-                                 Icons.access_time_filled_rounded,
-                                 size: 30.0,
-                                )
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 20,),
-                      Row(
-                        children :[ ElevatedButton.icon(
-                            onPressed: () async{
-                              await showDatePickerForRemainder();
-                                int year, month, day, hour, min;
-                                if (pickedDate != null) {
-                                  year = pickedDate!.year;
-                                  month = pickedDate!.month;
-                                  day = pickedDate!.day;
-                                } else {
-                                  year = DateTime.now().year;
-                                  month = DateTime.now().month;
-                                  day = DateTime.now().day;
-                                }
-                                if (pickedTime != null) {
-                                  hour = pickedTime!.hour;
-                                  min = pickedTime!.minute;
-                                } else {
-                                  hour = 9; // Default hour
-                                  min = 30; // Default minute
-                                }
-                                scheduleNotification.setSelectedMin = min;
-                                scheduleNotification.setSelectedHour = hour;
-                                scheduleNotification.setSelectedDay = day;
-                                scheduleNotification.setSelectedYear = year;
-                                scheduleNotification.setSelectedMonth = month;
-                                scheduleNotification.setSelectedDateAndTimeSelected = true;
-                            },
-                            label: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(
-                                  isRemainderDateAndNotEmpty() ?
-                                  "Remaind me $formattedRemainderTime\n$formattedRemainderDate":
-                                    "Remaind me"
-                              ),
-                            ),
-                          icon:  const Icon(
-                              Icons.notifications_active_outlined,
-                            size: 20.0,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black, backgroundColor: Colors.yellow,
-                          ),
-                        ),
-                          if (isRemainderDateAndNotEmpty())
-                            IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.black,
-                              ),
-                              onPressed: (){
-                                  setState(() {
-                                    formattedRemainderDate = '';
-                                    formattedRemainderTime = '';
-                                  });
-                                },
-                            ),
-                        ]
-                      ),
-                    ],
-                  )
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.yellow,
-                onPressed: () {
-                  _createNewTask(taskProvider,taskId??'',scheduleNotification);
-                  Navigator.pop(context);
-                  },
-                child: const Icon(Icons.check),
-            ),
-          );
-        }
+  Padding _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 15.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 
-  TextStyle _textStyleForLabel(){
-    return const TextStyle(
-        fontSize: 15.0,
-        fontWeight: FontWeight.bold
+  TextFormField _buildTextField(TextEditingController controller, String hint) {
+    return TextFormField(
+      controller: controller,
+      style: const TextStyle(fontSize: 20.0, color: Colors.white),
+      maxLines: null,
+      decoration: InputDecoration(
+        hintText: hint,
+        filled: true,
+        fillColor: Colors.white10,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 
-  bool isRemainderDateAndNotEmpty(){
-    return (formattedRemainderDate.isNotEmpty || formattedRemainderTime.isNotEmpty);
+  Widget _buildDateTimeField(TextEditingController controller, String hint,
+      Function() onTap, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: TextFormField(
+        controller: controller,
+        cursorColor: Colors.white,
+        style: const TextStyle(fontSize: 20.0, color: Colors.white),
+        readOnly: true,
+        decoration: InputDecoration(
+          hintText: hint,
+          filled: true,
+          fillColor: Colors.white12,
+          prefixIcon: Icon(icon, color: Colors.white),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 10, vertical: 5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+        ),
+        onTap: onTap,
+      ),
+    );
   }
 
-  bool isPickedDateAndTimeNotEmpty(){
-    bool res = pickedDate != null || pickedTime!=null;
-    return res ;
+  bool isRemainderDateAndNotEmpty() {
+    return formattedRemainderDate.isNotEmpty ||
+        formattedRemainderTime.isNotEmpty;
   }
 
-  void _createNewTask(TaskProvider taskProvider,String taskId,ScheduleNotification scheduleNotification){
-     var taskName = _taskNameController.text;
-     var date = _dateController.text;
-     var time = _timeController.text;
-     if(taskName.isNotEmpty){
-       taskProvider.createOrUpdateTodo(
-           taskName,
-           date,
-           time,
-           taskId,
-           formattedRemainderDate,
-           formattedRemainderTime,
-           scheduleNotification
-       );
-     }
-  }
-
-  Future<void> showDatePickerForRemainder() async{
-    pickedDate = await showDatePicker(
-        context: context,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(6000));
-    pickedTime = await showTimePicker(
-       context: context,
-       initialTime: const TimeOfDay(hour: 12,minute: 0)
-   );
-   formattedRemainderTime = "${pickedTime?.hour}:${pickedTime!.minute < 10 ? '0${pickedTime?.minute}' : '${pickedTime?.minute}'}";
-   formattedRemainderDate = '${getWeekOfTheDay(pickedDate!.weekday)}, ${pickedDate?.day} ${getMonthName(pickedDate!.month)}';
-  }
-
-  String getWeekOfTheDay(int weekDay){
-    switch (weekDay){
-      case 1:
-        return "Mon";
-      case 2:
-        return "Tue";
-      case 3:
-        return "Wed";
-      case 4:
-        return "Thu";
-      case 5:
-        return "Fri";
-      case 6:
-        return "Sat";
-      case 7:
-        return "Sun";
-      default:{
-        return "";
-      }
+  void _createNewTask(TaskProvider taskProvider, String taskId,
+      ScheduleNotification scheduleNotification) {
+    var taskName = _taskNameController.text;
+    var date = _dateController.text;
+    var time = _timeController.text;
+    if (taskName.isNotEmpty) {
+      taskProvider.createOrUpdateTodo(
+          taskName,
+          date,
+          time,
+          taskId,
+          formattedRemainderDate,
+          formattedRemainderTime,
+          scheduleNotification);
     }
+  }
+
+  Future<void> showDatePickerForRemainder() async {
+    pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    pickedTime =
+    await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    formattedRemainderTime = "${pickedTime?.hour}:${pickedTime!.minute < 10 ? '0${pickedTime?.minute}' : '${pickedTime?.minute}'}";
+    formattedRemainderDate = '${getWeekOfTheDay(pickedDate!.weekday)}, ${pickedDate?.day} ${getMonthName(pickedDate!.month)}';
   }
 
   String getMonthName(int month) {
@@ -363,6 +356,28 @@ class _CreateTaskState extends State<CreateTask> {
         return "Dec";
       default:
         return "";
+    }
+  }
+
+  String getWeekOfTheDay(int weekDay){
+    switch (weekDay){
+      case 1:
+        return "Mon";
+      case 2:
+        return "Tue";
+      case 3:
+        return "Wed";
+      case 4:
+        return "Thu";
+      case 5:
+        return "Fri";
+      case 6:
+        return "Sat";
+      case 7:
+        return "Sun";
+      default:{
+        return "";
+      }
     }
   }
 }

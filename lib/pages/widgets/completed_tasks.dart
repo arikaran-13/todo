@@ -20,7 +20,7 @@ class _CompletedTasksState extends State<CompletedTasks> {
         builder: (context,taskProvider,child) {
           var completedTodos = taskProvider.getCompletedTodos();
           return  Scaffold(
-            backgroundColor: Colors.yellow[200],
+            backgroundColor: Colors.deepPurple.shade300,
             body: GestureDetector(
               onTap: (){
                 taskProvider.toggleLongPressStatusForAllSelectedTasks();
@@ -36,13 +36,14 @@ class _CompletedTasksState extends State<CompletedTasks> {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.yellow,
-              onPressed: (){
-                Navigator.of(context).pushNamed(
-                    TodoAppRoutes.newTask
-                );
-              },
-              child: const Icon(Icons.add),
+                onPressed: (){
+                  Navigator.of(context).pushNamed(
+                      TodoAppRoutes.newTask
+                  );
+                },
+              backgroundColor: Colors.deepPurple,
+              foregroundColor: Colors.white,
+              heroTag: "FAB_completed_task",
             ),
           );
         }

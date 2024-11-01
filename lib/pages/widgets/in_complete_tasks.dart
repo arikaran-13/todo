@@ -20,7 +20,7 @@ class _InCompleteTasksState extends State<InCompleteTasks> {
         builder: (context,taskProvider,child){
           var inCompletedTodos = taskProvider.getInCompletedTodos();
           return Scaffold(
-            backgroundColor: Colors.yellow[200],
+            backgroundColor: Colors.deepPurple[300],
             body: GestureDetector(
               onTap: (){ // this on tap ensures that if i click any area in body then it will unselect all selected item
                 taskProvider.toggleLongPressStatusForAllSelectedTasks();

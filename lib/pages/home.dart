@@ -26,26 +26,36 @@ class _HomeState extends State<Home> {
     return Consumer<TaskProvider>(
       builder: (context,taskProvider,child) {
         return  Scaffold(
-            backgroundColor: Colors.yellow[200],
+            backgroundColor: Colors.deepPurple.shade300,
             appBar: AppBar(
-              title: const Text("Todo(s)"),
-              backgroundColor: Colors.yellow,
+              title: const Text(
+                  "Todos",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              backgroundColor: Colors.deepPurple,
+              foregroundColor: Colors.white,
               elevation: 0,
               centerTitle: true,
               actions: _buildAppBarActions(taskProvider),
             ),
             body: _widgets[selectedIndex],
           floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.yellow,
               onPressed: (){
                 Navigator.of(context).pushNamed(
-                  TodoAppRoutes.newTask
+                    TodoAppRoutes.newTask
                 );
               },
-              child: const Icon(Icons.add),
+            backgroundColor: Colors.deepPurple,
+            foregroundColor: Colors.white,
+            child: const Icon(Icons.add),
+            heroTag: "FAB_home",
           ),
           bottomNavigationBar: BottomNavigationBar(
-             backgroundColor: Colors.yellow,
+              backgroundColor: Colors.deepPurple,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white.withOpacity(0.8),
               currentIndex: selectedIndex,
               onTap: (currentSelectedIndex){
                setState(() {
@@ -55,11 +65,17 @@ class _HomeState extends State<Home> {
               },
               items: const [
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
+                    icon: Icon(
+                        Icons.home,
+                      color: Colors.white,
+                    ),
                     label: "Home"
                 ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.check_circle),
+                    icon: Icon(
+                        Icons.check_circle,
+                      color: Colors.white,
+                    ),
                     label: "Completed Todos"
                 )
               ]
@@ -87,13 +103,13 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text(
+              child: Text(
                 "No",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.grey[700]),
               ),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amberAccent),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
               onPressed: () {
                 taskProvider.checkAllLongPressedTasks();
                 Navigator.of(context).pop();
@@ -101,7 +117,7 @@ class _HomeState extends State<Home> {
               child: const Text(
                   "Yes",
                 style: TextStyle(
-                  color: Colors.black
+                  color: Colors.white
                 ),
               ),
             ),
@@ -117,7 +133,10 @@ class _HomeState extends State<Home> {
         return AlertDialog(
           title: const Text(
             "Confirm Action",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),
           ),
           content: const Text(
             "Delete selected tasks?",
@@ -128,13 +147,13 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text(
+              child: Text(
                 "No",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.grey[700]),
               ),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
               onPressed: () {
                 taskProvider.removeAllTaskLongPressed();
                 Navigator.of(context).pop();
@@ -142,7 +161,7 @@ class _HomeState extends State<Home> {
               child: const Text(
                   "Yes",
                 style: TextStyle(
-                  color: Colors.black
+                  color: Colors.white
                 ),
               ),
             ),
@@ -168,9 +187,13 @@ class _HomeState extends State<Home> {
       if(taskProvider.isIncompleteTodoTasksLongPressed())
         Checkbox(
           value: false,
+          activeColor: Colors.white,
+          checkColor: Colors.black,
+          side: const BorderSide(
+            color: Colors.white
+          ),
           onChanged: (val){
             showAlertDialogBoxForCheckAllTaskButton(taskProvider);
-
           },
         ),
       if(taskProvider.isIncompleteTodoTasksLongPressed())
@@ -195,6 +218,11 @@ class _HomeState extends State<Home> {
       if(taskProvider.isCompletedTodoTasksLongPressed())
         Checkbox(
           value: taskProvider.isAnyTodoTaskCompleted(),
+          activeColor: Colors.white,
+          checkColor: Colors.black,
+          side: const BorderSide(
+            color: Colors.white
+          ),
           onChanged: (val){
             showAlertDialogBoxForCheckAllTaskButton(taskProvider);
           },
