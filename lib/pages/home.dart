@@ -180,10 +180,6 @@ class _HomeState extends State<Home> {
 
   List<Widget>_buildAppBarActionForIncompleteTasks(TaskProvider taskProvider){
     return [
-      IconButton(icon: Icon(Icons.delete_forever),
-        onPressed: (){
-          TodoStorage.deleteAll();
-        },),
       if(taskProvider.isIncompleteTodoTasksLongPressed())
         Checkbox(
           value: false,
@@ -211,10 +207,6 @@ class _HomeState extends State<Home> {
 
   List<Widget>_buildAppBarActionForCompletedTasks(TaskProvider taskProvider){
     return [
-      IconButton(icon: Icon(Icons.delete_forever),
-        onPressed: (){
-          TodoStorage.deleteAll();
-        },),
       if(taskProvider.isCompletedTodoTasksLongPressed())
         Checkbox(
           value: taskProvider.isAnyTodoTaskCompleted(),

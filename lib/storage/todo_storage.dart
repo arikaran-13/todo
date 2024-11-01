@@ -59,11 +59,6 @@ class TodoStorage {
     }
   }
 
-  static void deleteAll() {
-    Hive.deleteBoxFromDisk("todoBox");
-    log.i("Deleted todo box");
-  }
-
   static void updateTodoTask(String taskId, bool longPressStatus) {
    Todo? todo =  todoBox.get(taskId);
    if(todo == null){
