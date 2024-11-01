@@ -6,7 +6,7 @@ import 'package:todo/models/todo.dart';
 class TodoStorage {
 
   static Box<Todo>todoBox = Hive.box("todoBox");
-  static var log = Logger();
+  static final log = Logger();
 
   static void saveTodo(String taskId,Todo newTodo){
     try {
