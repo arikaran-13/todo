@@ -1,10 +1,11 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logger/logger.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
   FlutterLocalNotificationsPlugin();
-
+  var log = Logger();
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
     const AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -21,6 +22,21 @@ class NotificationService {
     await notificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse notificationResponse) async {});
+
+     notificationsPlugin // requesting permission for all notifications from user
+         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+         ?.requestNotificationsPermission();
+
+     //requesting permission for scheduled notification from user
+    bool? isScheduleNotificationPermissionGranted = await notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+    ?.requestExactAlarmsPermission();
+    
+    if(isScheduleNotificationPermissionGranted!= null  && isScheduleNotificationPermissionGranted){
+      log.i("Schedule notification Permission Granted");
+    }
+    else{
+      log.i("Schedule notification Permission Denied");
+    }
   }
 
   notificationDetails() {
@@ -48,7 +64,7 @@ class NotificationService {
         tz.TZDateTime.from(scheduledDateTime, tz.local),
         await notificationDetails(),
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle
     );
   }
 

@@ -193,7 +193,7 @@ class _CreateTaskState extends State<CreateTask> {
                         padding: const EdgeInsets.all(5.0),
                         child: Text(
                           isRemainderDateAndNotEmpty()
-                              ? "Remind me at $formattedRemainderTime on $formattedRemainderDate"
+                              ? "Remind me at $formattedRemainderTime\non $formattedRemainderDate"
                               : "Set Reminder",
                         ),
                       ),
@@ -256,7 +256,7 @@ class _CreateTaskState extends State<CreateTask> {
   TextFormField _buildTextField(TextEditingController controller, String hint) {
     return TextFormField(
       controller: controller,
-      style: const TextStyle(fontSize: 20.0, color: Colors.white),
+      style: const TextStyle(fontSize: 18.0, color: Colors.white),
       maxLines: null,
       decoration: InputDecoration(
         hintText: hint,
@@ -278,7 +278,7 @@ class _CreateTaskState extends State<CreateTask> {
       child: TextFormField(
         controller: controller,
         cursorColor: Colors.white,
-        style: const TextStyle(fontSize: 20.0, color: Colors.white),
+        style: const TextStyle(fontSize: 18.0, color: Colors.white),
         readOnly: true,
         decoration: InputDecoration(
           hintText: hint,

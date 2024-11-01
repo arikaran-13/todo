@@ -44,7 +44,7 @@ class _TodoTileState extends State<TodoTile> {
               width: longPressStatus? 2.0 : 0
             )
           ),
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(10),
           child: ListTile(
             leading: Checkbox(
                 value: todo.isCompleted,
