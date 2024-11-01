@@ -5,11 +5,10 @@ import 'package:timezone/timezone.dart' as tz;
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
   FlutterLocalNotificationsPlugin();
-  var log = Logger();
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
     const AndroidInitializationSettings("@mipmap/ic_launcher");
-
+    var log = Logger();
     var initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,

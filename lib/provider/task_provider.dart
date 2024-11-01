@@ -178,14 +178,21 @@ class TaskProvider extends ChangeNotifier{
      NotificationService().scheduleNotification(
          id: 0, // todo: for each task we need to generate the unique notification id
          title: "⏰ Reminder: ${todo.taskName}",
-         body: "Don't forget! Finish '${todo.taskName}' by ${todo
-             .dueDate} at ${todo.dueTime}. You've got this! 💪",
+         body: getPushNotificationBody(todo),
          scheduledDateTime: dateTime
      );
    }
    else{
      log.e("Remainder date time is in future/past");
    }
+  }
+  
+  String getPushNotificationBody(Todo todo){
+    if(todo.dueDate.isEmpty ||  todo.dueTime.isEmpty){
+      return "Don't forget! Finish '${todo.taskName}' You've got this! 💪";
+    }
+    return "Don't forget! Finish '${todo.taskName}' by ${todo
+        .dueDate} at ${todo.dueTime}. You've got this! 💪";
   }
 
   void updateTodoTaskLongPressStatusByTaskId(String taskId, bool longPressStatus) {

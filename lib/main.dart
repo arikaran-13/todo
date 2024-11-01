@@ -33,7 +33,7 @@ class TodoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: TodoAppRoutes.routes,
       theme: ThemeData(
-        primarySwatch: Colors.yellow
+        primarySwatch: Colors.deepPurple
       ),
     );
   }

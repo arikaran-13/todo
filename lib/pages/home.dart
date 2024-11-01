@@ -17,8 +17,8 @@ class _HomeState extends State<Home> {
   var selectedIndex =0;
 
   final List<Widget>_widgets = [
-    InCompleteTasks(),
-    CompletedTasks(),
+    const InCompleteTasks(),
+    const CompletedTasks(),
   ];
 
   @override
