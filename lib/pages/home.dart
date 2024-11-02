@@ -49,8 +49,8 @@ class _HomeState extends State<Home> {
               },
             backgroundColor: Colors.deepPurple,
             foregroundColor: Colors.white,
-            child: const Icon(Icons.add),
             heroTag: "FAB_home",
+            child: const Icon(Icons.add),
           ),
           bottomNavigationBar: BottomNavigationBar(
               backgroundColor: Colors.deepPurple,
