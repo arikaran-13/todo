@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/models/todo.dart';
 
 import '../../provider/task_provider.dart';
 import '../../routes/routes.dart';
@@ -25,15 +26,7 @@ class _CompletedTasksState extends State<CompletedTasks> {
               onTap: (){
                 taskProvider.toggleLongPressStatusForAllSelectedTasks();
               },
-              child: ListView.builder(
-                itemCount: completedTodos.length,
-                itemBuilder: (context,index){
-                  return TodoTile(
-                    todo: completedTodos[index],
-                    taskProvider: taskProvider,
-                  );
-                },
-              ),
+              child: buildScaffoldBodyBasedOnCompleteTodos(completedTodos, taskProvider)
             ),
             floatingActionButton: FloatingActionButton(
                 onPressed: (){
@@ -47,6 +40,30 @@ class _CompletedTasksState extends State<CompletedTasks> {
             ),
           );
         }
+    );
+  }
+  
+  Widget buildScaffoldBodyBasedOnCompleteTodos(List<Todo>completedTodos,TaskProvider taskProvider){
+    if(completedTodos.isEmpty){
+      return const Center(
+          child: Text(
+            "No completed todos",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold
+            ),
+          )
+      );
+    }
+    return ListView.builder(
+      itemCount: completedTodos.length,
+      itemBuilder: (context,index){
+        return TodoTile(
+          todo: completedTodos[index],
+          taskProvider: taskProvider,
+        );
+      },
     );
   }
   }
