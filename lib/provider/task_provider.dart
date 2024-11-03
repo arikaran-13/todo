@@ -171,7 +171,7 @@ class TaskProvider extends ChangeNotifier{
   void createNotification(Todo todo, ScheduleNotification scheduleNotification) {
     DateTime dateTime = DateTime(scheduleNotification.year,scheduleNotification.month,scheduleNotification.day,scheduleNotification.hour,scheduleNotification.min);
     if(!scheduleNotification.isScheduledDateAndTimeSelected){
-      log.e("Remainder not set for task ${todo.taskName}");
+      log.i("Remainder not set for task ${todo.taskName}");
       return;
     }
     if(dateTime.isAfter(DateTime.now())) {
